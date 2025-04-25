@@ -42,7 +42,7 @@ Make sure you have these installed in the Arduino IDE:
 | **RTC RST**     | 24               | `#define RST 24`               |
 | **Relay – Solar**   | 25               | `#define IOSOLAR 25`           |
 | **Relay – Heater**  | 26               | `#define IOHEATER 26`          |
-| **Relay – Motor/Fan** | 27           | `#define IOMOTOR 27`           |
+| **Relay – Synchronous Motor** | 27           | `#define IOMOTOR 27`           |
 | **Relay – Humidifier** | 28         | `#define IOHUMID 28`           |
 | **DHT22 Sensor** | 29               | `#define IODHT 29`             |
 | **DHT Type**     | —                | `#define DHTTYPE DHT22`        |
