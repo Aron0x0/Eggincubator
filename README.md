@@ -51,7 +51,7 @@ Make sure you have these installed in the Arduino IDE:
 
 ## 🚀 Getting Started
 
-1. Open `egg_incubator.ino` in the Arduino IDE.
+1. Open `Eggincubator.ino` in the Arduino IDE.
 2. Install the required libraries listed above.
 3. Connect all components as per the wiring plan.
 4. Upload the sketch to your Arduino Mega.
@@ -63,6 +63,7 @@ Make sure you have these installed in the Arduino IDE:
 - Store settings using EEPROM
 - Add a buzzer for alarms (overheat, low humidity)
 - Integrate an SD card for logging data
+- Adding Android Software to Optimize and Calibrate the Incubator. Make the debugging for ERROR more easyly.
 
 ## 📸 Preview
 
