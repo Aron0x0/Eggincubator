@@ -7,7 +7,8 @@ A DIY automatic egg incubator project built using Arduino Mega, designed to regu
 - Arduino Mega 2560
 - RMH RTC DS1302 (with **VirtuabotixRTC** library)
 - DHT22 (Temperature & Humidity Sensor) – using **DHT** library
-- 3 x Relay Module (Heater, Humidifier, Fan or Light)
+- 3 x Relay Module (Heater, Motor, Solar)
+- 1 x Mosfet Controlled Humidifier
 - 3.5" TFT LCD Shield – using **MCUFRIEND_kbv**
 - Touch Input – using **TouchScreen** library
 - Jumper wires, breadboard, power supply, etc.
