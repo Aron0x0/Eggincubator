@@ -63,7 +63,7 @@ Make sure you have these installed in the Arduino IDE:
 - Store settings using EEPROM
 - Add a buzzer for alarms (overheat, low humidity)
 - Integrate an SD card for logging data
-- Adding Android Software to Optimize and Calibrate the Incubator. Make the debugging for ERROR more easyly.
+- Adding Android Software to Optimize and Calibrate the Incubator. Make the debugging for ERROR more easier.
 
 ## 📸 Preview
 
