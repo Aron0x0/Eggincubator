@@ -32,7 +32,7 @@ bool SystemRunning = false;
 // unsigned long DelayDevice[];
 // unsigned long DurationDevice[];
 bool timeExecution[] = {};
-
+bool HumidBjtSwitchRun = true;
 
 bool lastdeviceState[DEVICE_COUNT] = { false };
 bool deviceState[DEVICE_COUNT] = { false }; 
@@ -56,5 +56,5 @@ const uint16_t TotalOperatingDay = 21;
 unsigned long MotorLastTime;
 unsigned long MotorDelayStart = 0;
 unsigned long MotorActiveStart = 0;
-float MotorDelay = 5;
+float MotorDelay = 20;
 float MotorActiveDuration = 10;

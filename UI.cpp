@@ -3,137 +3,7 @@
 #include "Utils.h"
 #include "Logic.h"
 #include "TouchHandler.h"
-
-void setupData(){
-  maxtemp = 37.5;
-  mintemp = 35.5;
-  maxhumid = 55;
-  minhumid = 45;
-  DATE = "00/00/0000";
-}
-
-void UIinit() {
-  tft.begin(tft.readID());
-  tft.setRotation(1);
-  tft.fillScreen(BLACK);
-  setupData();
-  EggIncubatorFrame();
-}
-
-void FrameLoop() {
-  p = ts.getPoint();
-  pinMode(xm, OUTPUT);
-  pinMode(yp, OUTPUT);
-
-  if(currentState != lastState){
-    tft.fillScreen(GRAY);
-    drawCurrentScreen();
-    lastState = currentState;
-  }
-
-  if (currentState == STATE_MAIN) {
-    if(lasttemp != temp || lasthumid != humid){
-      destroyTempHumidDisplay();
-      updateTempHumidDisplay();
-    }
-
-    updateUiClock(CLOCK, LASTCLOCK, 240, 20); // drawString("99/99 AM", 240, 20, 3, WHITE, true);
-    updateUiDevice();
-  }
-
-
-  if(currentState == STATE_SETUP){
-    if(currentList != lastList){
-      drawCurrentList();
-    }
-    if(currentList == LIST1){
-      updateUIField(maxtemp, lastmaxtemp, 230, 115);
-      updateUIField(mintemp, lastmintemp, 230, 168);
-      updateUIField(maxhumid, lastmaxhumid, 250, 221);
-      updateUIField(minhumid, lastminhumid, 250, 274);
-      isSetupCalibrationFirstRun = false;
-      if(currentListVar != lastListVar){
-      }
-    }
-  }
-  if(p.z > minpressure && p.z < maxpressure){
-    int x = map(p.y, ts_maxy, ts_miny, 0, 490);
-    int y = map(p.x, ts_minx, ts_maxx, 0, 325); 
-    printTouchPoint(x, y);
-    EachFrameListener(x, y);
-  }
-}
-
-void drawCurrentList(){
-  switch(currentList){
-    case LIST1:
-      CalibrationFrame();
-      break;
-    case LIST2:
-      TimeAndDateFrame();
-      break;
-    case LIST3:
-      tft.fillScreen(GREEN);
-      break;
-  }
-}
-
-
-
-void drawCurrentScreen(){
-  switch(currentState){
-    case STATE_HOME:
-      EggIncubatorFrame();
-      break;
-    case STATE_MAIN:
-      MainFrame();
-      break;
-    case STATE_SETUP:
-      SetupFrame();
-      CalibrationFrame();
-      break;
-    case STATE_MENU:
-      MenuFrame();
-      break;
-    case STATE_TIME:
-      TimeAndDateFrame();
-      break;
-    case STATE_CALIBRATION:
-      CalibrationFrame();
-      break;
-    case STATE_ABOUT:
-      AboutFrame();
-      break;
-  }
-}
-
-
-
-void SetupCalibrationAdjustVariable(int tx, int ty){
-  switch(currentListVar){
-    case MAXTEMP:
-      SetupCalibrationAdjustListener(&maxtemp, tx, ty);
-      break;
-    case MINTEMP:
-      SetupCalibrationAdjustListener(&mintemp, tx, ty);
-      break;
-    case MAXHUMID:
-      SetupCalibrationAdjustListener(&maxhumid, tx, ty);
-      break;
-    case MINHUMID:
-      SetupCalibrationAdjustListener(&minhumid, tx, ty);
-      break;
-  }
-}
-
-
-
-// Action Listener --------------------------------------------------------------------------------------
-
-
-
-
-// UI -----------------------------------------------------------------
+#include "UIHandler.h"
 
 void EggIncubatorFrame(){
   tft.setRotation(1);
@@ -151,8 +21,8 @@ void MainFrame(){
   tft.drawRect(15, 12, 450, 295, BLACK);
   updateUiClock(CLOCK, LASTCLOCK, 240, 20);
   drawString(DATE, 340, 18, 2, WHITE);
-  drawString("TEMP:", 26, 55, 3, WHITE);
-  drawString("HUMID:", 26, 175, 3, WHITE);
+  drawString("TEMP:", 60, 55, 3, WHITE);
+  drawString("HUMID:", 60, 175, 3, WHITE);
   drawRecWithFrame(280, 73, 151, 47, RED, "MOTOR", BLACK, 3);
   drawRecWithFrame(280, 127, 151, 47, RED, "HUMID", BLACK, 3);
   drawRecWithFrame(280, 181, 151, 47, RED, "HEAT", BLACK, 3);
@@ -180,6 +50,8 @@ void SetupFrame(){
   drawString("Calibration", 45, 63, 1, WHITE);
   drawString("Time & Date", 198, 63, 1, WHITE);
   drawString("Other's", 378, 63, 1, WHITE);
+  tft.drawRect(5, 92, 467, 223, BLACK);
+  tft.drawRect(6, 93, 465, 221, BLACK);
 
 }
 
@@ -188,12 +60,15 @@ void AboutFrame(){
 void MenuFrame(){
 }
 void TimeAndDateFrame(){
-  tft.fillScreen(BLUE);
+  tft.fillRect(7, 94, 463, 219, GRAY);
+
+}
+void OtherFrame(){
+  tft.fillRect(7, 94, 463, 219, BLACK);
 }
 void CalibrationFrame(){
   int xlistbox = 170;
-  tft.drawRect(5, 92, 467, 223, BLACK);
-  tft.drawRect(6, 93, 465, 221, BLACK);
+  tft.fillRect(7, 94, 463, 219, GRAY);
 
   tft.fillRect(xlistbox, 101, 170, 45, WHITE);
   tft.fillRect(xlistbox, 154, 170, 45, WHITE);
@@ -344,6 +219,37 @@ void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool center)
   tft.setCursor(textX, y);
   tft.print(msg);
 }
+
+void drawCirclePixelByPixel(int xc, int yc, int r, uint16_t color) {
+    int x = 0;
+    int y = r;
+    int d = 3 - 2 * r;
+
+    while (y >= x) {
+        // Draw the 8 symmetric points
+        tft.drawPixel(xc + x, yc + y, color);
+        tft.drawPixel(xc - x, yc + y, color);
+        tft.drawPixel(xc + x, yc - y, color);
+        tft.drawPixel(xc - x, yc - y, color);
+        tft.drawPixel(xc + y, yc + x, color);
+        tft.drawPixel(xc - y, yc + x, color);
+        tft.drawPixel(xc + y, yc - x, color);
+        tft.drawPixel(xc - y, yc - x, color);
+
+        x++;
+
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+
+        // OPTIONAL: slow down animation
+        // delay(5); // uncomment for visible drawing animation
+    }
+}
+
 void printTouchPoint(int x, int y){
   Serial.print(" (");Serial.print(x);Serial.print(", ");Serial.print(y);
   Serial.println(")");

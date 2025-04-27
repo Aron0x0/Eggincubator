@@ -13,6 +13,9 @@ void DebugDeviceStates();
 void UpdateDeviceState();
 void SensorDevice();
 
+void humidSwitchOff();
+void humidSwitchOn();
+
 int dayInMonth(uint8_t month, uint16_t year);
 void PredictedEndDay(uint8_t hour, uint8_t minute, uint16_t month, uint8_t day, uint16_t year, uint8_t addDays);
 bool TimeDelayExecution(uint8_t deviceIndex, uint8_t IO, unsigned long interval, unsigned long duration);

@@ -6,16 +6,28 @@
 #include <virtuabotixRTC.h>
 
 
+// #define CLK 22
+// #define DAT 23
+// #define RST 24
+
+// #define IOSOLAR 25
+// #define IOHEATER 26
+// #define IOMOTOR 27
+// #define IOHUMID 28
+
+// #define IODHT 29
+
 #define CLK 22
 #define DAT 23
 #define RST 24
 
-#define IOSOLAR 25
+#define IOSOLAR 29
 #define IOHEATER 26
-#define IOMOTOR 27
-#define IOHUMID 28
+#define IOMOTOR 28
+#define IOHUMID 30
 
-#define IODHT 29
+#define IODHT 31
+
 #define DHTTYPE DHT22
 
 
@@ -75,6 +87,7 @@ enum DeviceState {
 
 enum Debug {
   DEVICES,
+  EXTERNAL_STORAGE,
   DEVICES_COUNT
 };
 
@@ -110,7 +123,7 @@ extern int humid, lasthumid;
 extern bool isSetupCalibrationFirstRun;
 extern String DATE, LASTDATE, CLOCK, LASTCLOCK;
 
-
+extern bool HumidBjtSwitchRun;
 extern bool SystemRunning;
 extern bool timeExecution[];
 extern bool deviceState[DEVICE_COUNT];

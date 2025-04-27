@@ -1,6 +1,7 @@
 #include "Logic.h"
 #include "Config.h"
 #include "Utils.h"
+#include "Logger.h"
 
 void LogicInit() {
   dht.begin();
@@ -26,6 +27,9 @@ void SystemTimeUpdate(){
     PrintDateNow();
   }
 
+  if(DelayFunction(EXTERNAL_STORAGE, 10000)){
+    WriteExternalStorage();
+  }
 }
 
 void PrintDateNow(){
@@ -79,6 +83,8 @@ void SetupDeviceIO(){
   pinMode(IOHUMID, OUTPUT);
   pinMode(IOSOLAR, OUTPUT);
   pinMode(IOMOTOR, OUTPUT);
+  digitalWrite(IOMOTOR, HIGH);
+  digitalWrite(IOHEATER, HIGH);
 }
 
 void DebugDeviceStates() {
@@ -106,9 +112,10 @@ void DebugDeviceStates() {
 }
 
 void UpdateDeviceState(){
-  digitalWrite(IOHEATER, deviceState[HEATER] ? HIGH : LOW);
-  digitalWrite(IOHUMID, deviceState[HUMID] ? HIGH : LOW);
-  digitalWrite(IOMOTOR, deviceState[MOTOR] ? HIGH : LOW);
+  digitalWrite(IOHEATER, deviceState[HEATER] ? LOW : HIGH);
+  // digitalWrite(IOHUMID, deviceState[HUMID] ? HIGH : LOW);
+  // deviceState[HUMID] ? humidSwitchOn() : humidSwitchOff();
+  digitalWrite(IOMOTOR, deviceState[MOTOR] ? LOW : HIGH);
   digitalWrite(IOSOLAR, deviceState[SOLAR] ? HIGH : LOW);
 }
 
@@ -122,8 +129,16 @@ void SensorDevice(){
       }
       if(humid > maxhumid){
         deviceState[HUMID] = false;
+        if(!HumidBjtSwitchRun){
+          humidSwitchOff();
+          HumidBjtSwitchRun = true;
+        }
       }else if(humid < minhumid){
         deviceState[HUMID] = true;
+        if(HumidBjtSwitchRun){
+          humidSwitchOn();
+          HumidBjtSwitchRun = false;
+        }
       }
     }else{
       temp = 3; humid = 3;//3 = for Lost Connection on DHT22
@@ -200,4 +215,24 @@ int dayInMonth(uint8_t month, uint16_t year) {
   }else{
     return 31;
   }
+}
+
+void humidSwitchOff(){
+  uint8_t processdelay = 40;
+  digitalWrite(IOHUMID, HIGH);
+  delay(processdelay);
+  digitalWrite(IOHUMID, LOW);
+  delay(processdelay);
+  digitalWrite(IOHUMID, HIGH);
+  delay(processdelay);
+  digitalWrite(IOHUMID, LOW);
+  delay(processdelay);
+}
+
+void humidSwitchOn(){
+  uint8_t processdelay = 30;
+  digitalWrite(IOHUMID, HIGH);
+  delay(processdelay);
+  digitalWrite(IOHUMID, LOW);
+  delay(processdelay);
 }

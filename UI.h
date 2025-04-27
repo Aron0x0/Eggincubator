@@ -3,13 +3,6 @@
 
 #include "Config.h"
 
-void UIinit();
-void FrameLoop();
-
-void drawCurrentList();
-void drawCurrentScreen();
-void SetupCalibrationAdjustVariable(int tx, int ty);
-
 void MenuFrame();
 void MainFrame();
 void EggIncubatorFrame();
@@ -19,6 +12,7 @@ void updateTempHumidDisplay();
 void drawCurrentList();
 void SetupFrame();
 void AboutFrame();
+void OtherFrame();
 void TimeAndDateFrame();
 void CalibrationFrame();
 
@@ -33,14 +27,12 @@ void drawCircleWithFrame(int x, int y, int r, int color, String label, int textC
 void drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size);
 void destroyAndDrawValues(String msg, String lastmsg, int px, int py, int size, uint16_t DestroyColor, uint16_t DrawColor);
 
+void drawCirclePixelByPixel(int xc, int yc, int r, uint16_t color);
+
 void drawString(String msg, int x, int y, uint16_t size);
 void drawString(String msg, int x, int y, float size, uint16_t COLOR);
 void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool center);
 
-//----------Listener------------------------
-
-
-//----------BackEnd-------------------
 void printTouchPoint(int x, int y);
 
 #endif

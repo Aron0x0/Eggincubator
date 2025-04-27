@@ -1,4 +1,5 @@
 #include "TouchHandler.h"
+#include "UIHandler.h"
 #include "Config.h"
 #include "UI.h"
 #include "Logic.h"
@@ -63,6 +64,20 @@ void SetupListener(int tx, int ty){
     Serial.println("/> Action :: Clicked :: Setup Exit Button");
     currentState = STATE_HOME;
     isSetupCalibrationFirstRun = true;
+  }
+  if(isTouchInsideRectangle(22, 49, 127, 39, tx, ty)){
+    Serial.println("/> Action :: Clicked :: Calibration Button");
+    currentList = LIST1;
+  }
+  if(isTouchInsideRectangle(163, 49, 154, 39, tx, ty)){
+    Serial.println("/> Action :: Clicked :: Time & Date Button");
+    isSetupCalibrationFirstRun = true;
+    currentList = LIST2;
+  }
+  if(isTouchInsideRectangle(331, 49 , 127, 39, tx, ty)){
+    Serial.println("/> Action :: Clicked :: Other's Button");
+    isSetupCalibrationFirstRun = true;
+    currentList = LIST3;
   }
 }
 void AboutListener(int tx, int ty){
