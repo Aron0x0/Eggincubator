@@ -5,28 +5,16 @@
 #include <DHT.h>
 #include <virtuabotixRTC.h>
 
-
-// #define CLK 22
-// #define DAT 23
-// #define RST 24
-
-// #define IOSOLAR 25
-// #define IOHEATER 26
-// #define IOMOTOR 27
-// #define IOHUMID 28
-
-// #define IODHT 29
-
-#define CLK 22
-#define DAT 23
-#define RST 24
+#define CLK 23
+#define DAT 25
+#define RST 27
 
 #define IOSOLAR 29
-#define IOHEATER 26
-#define IOMOTOR 28
-#define IOHUMID 30
+#define IOHEATER 31
+#define IOMOTOR 33
+#define IOHUMID 35
 
-#define IODHT 31
+#define IODHT 49
 
 #define DHTTYPE DHT22
 
@@ -61,7 +49,8 @@ enum FrameState {
   STATE_SETUP,
   STATE_ABOUT,
   STATE_TIME,
-  STATE_CALIBRATION
+  STATE_CALIBRATION,
+  STATE_STATS
 };
 
 enum SetupList {
@@ -122,6 +111,7 @@ extern float temp, lasttemp;
 extern int humid, lasthumid;
 extern bool isSetupCalibrationFirstRun;
 extern String DATE, LASTDATE, CLOCK, LASTCLOCK;
+extern String FORMATDATE, LASTFORMATDATE, TOFORMATDATE, LASTTOFORMATDATE;
 
 extern bool HumidBjtSwitchRun;
 extern bool SystemRunning;
@@ -135,10 +125,10 @@ extern unsigned long functionDelayTracker[DEVICE_COUNT];
 
 extern uint8_t solarOnHour, solarOnMinute, solarOffHour, solarOffMinute;
 // extern uint8_t temp, humid, maxtemp, mintemp, maxhumid, minhumid;
-extern uint8_t currHour, currMinute, currDay, currMonth, currYear;
-extern uint8_t lastHour, lastMinute, lastDay, lastMonth, lastYear;
-extern uint8_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
-extern uint8_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
+extern uint16_t currHour, currMinute, currDay, currMonth, currYear;
+extern uint16_t lastHour, lastMinute, lastDay, lastMonth, lastYear;
+extern uint16_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
+extern uint16_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
 
 extern const uint8_t Candling[2];
 extern const uint8_t UpdateHumid;

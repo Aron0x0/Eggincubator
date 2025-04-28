@@ -8,6 +8,10 @@ void setupData(){
   mintemp = 35.5;
   maxhumid = 60;
   minhumid = 55;
+  solarOnHour = 20;
+  solarOnMinute = 0;
+  solarOffHour = 6;
+  solarOffMinute = 0;
   DATE = "00/00/0000";
 }
 
@@ -25,7 +29,6 @@ void FrameLoop() {
   pinMode(yp, OUTPUT);
 
   if(currentState != lastState){
-    tft.fillScreen(GRAY);
     drawCurrentScreen();
     lastState = currentState;
   }
@@ -103,6 +106,9 @@ void drawCurrentScreen(){
       break;
     case STATE_ABOUT:
       AboutFrame();
+      break;
+    case STATE_STATS:
+      StatFrame();
       break;
   }
 }

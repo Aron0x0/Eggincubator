@@ -8,6 +8,7 @@ void AboutListener(int tx, int ty);
 void MenuListener(int tx, int ty);
 void TimeAndDateListener(int tx, int ty);
 void CalibrationListener(int tx, int ty);
+void StatListener(int tx, int ty);
 
 void SetupCalibrationListListener(int tx, int ty);
 void SetupCalibrationAdjustListener(int* var, int tx, int ty);

@@ -19,17 +19,22 @@ void EggIncubatorFrame(){
 void MainFrame(){
   tft.fillScreen(GRAY);
   tft.drawRect(15, 12, 450, 295, BLACK);
+  tft.drawRect(1, 1, 478, 318, BLACK);
+
+  tft.drawLine(1, 1, 15, 12, BLACK);
+  tft.drawLine(478, 318, 465, 307, BLACK);
+  tft.drawLine(478, 1, 465, 12, BLACK);
+  tft.drawLine(1, 318, 15, 307, BLACK);
+
   updateUiClock(CLOCK, LASTCLOCK, 240, 20);
   drawString(DATE, 340, 18, 2, WHITE);
-  drawString("TEMP:", 60, 55, 3, WHITE);
-  drawString("HUMID:", 60, 175, 3, WHITE);
+  drawString("TEMPERATURE:", 40, 55, 3, WHITE);
+  drawString("HUMIDITY:", 60, 175, 3, WHITE);
   drawRecWithFrame(280, 73, 151, 47, RED, "MOTOR", BLACK, 3);
   drawRecWithFrame(280, 127, 151, 47, RED, "HUMID", BLACK, 3);
   drawRecWithFrame(280, 181, 151, 47, RED, "HEAT", BLACK, 3);
   drawRecWithFrame(280, 235, 151, 47, RED, "SOLAR", BLACK, 3);
   updateUiDevice();
-
-
 }
 void updateTempHumidDisplay(){
   drawString(String(temp)+"c", 30, 90, 7);
@@ -52,6 +57,7 @@ void SetupFrame(){
   drawString("Other's", 378, 63, 1, WHITE);
   tft.drawRect(5, 92, 467, 223, BLACK);
   tft.drawRect(6, 93, 465, 221, BLACK);
+  
 
 }
 
@@ -92,6 +98,26 @@ void CalibrationFrame(){
   tft.drawCircle(420, 250, 30, BLACK);
   drawString("+", 403, 127, 7);
   drawString("-", 403, 227, 7);
+}
+
+
+void StatFrame(){
+  tft.fillRect(16, 13, 448, 293, GRAY);
+  tft.drawRect(38, 74, 404, 89, BLACK);
+  tft.drawRect(38, 190, 404, 89, BLACK);
+  drawString("Stats", 240, 25, 4, BLACK, true);
+  drawString("Solar Time", 131, 91, 2, YELLOW, true, true);
+  drawString("Begin", 334, 91, 2, GREEN, true, true);
+  drawString("End", 334, 129, 2, RED, true, true);
+
+  drawString(FORMATDATE, 335, 110, 2, darkenColor(GREEN, 0.2), true, true);
+  drawString(TOFORMATDATE, 335, 148, 2, darkenColor(RED, 0.2), true, true);
+  drawString("Start:", 85, 114, 2, darkenColor(YELLOW, 0.2), true, true);
+  drawString("End:", 85, 136, 2, darkenColor(YELLOW, 0.2), true, true);
+  drawString((ConvertTimeToUI(solarOnHour, solarOnMinute)), 170, 114, 2, darkenColor(YELLOW, 0.2), true, true);
+  drawString((ConvertTimeToUI(solarOffHour, solarOffMinute)), 170, 136, 2, darkenColor(YELLOW, 0.2), true, true);
+
+  drawString("Error Handler", 240, 207, 2, RED, true, true);
 }
 
 void updateUIField(float value, float &lastValue, int x, int y) {
@@ -202,7 +228,7 @@ void drawString(String msg, int x, int y, float size, uint16_t COLOR){
   tft.print(msg);
 }
 
-void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool center){
+void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool xcenter){
   tft.setTextSize(size);
   tft.setTextColor(COLOR);
 
@@ -217,6 +243,23 @@ void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool center)
 
   // Use provided Y
   tft.setCursor(textX, y);
+  tft.print(msg);
+}
+
+void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool xcenter, bool ycenter){
+  tft.setTextSize(size);
+  tft.setTextColor(COLOR);
+
+  // Get text bounds
+  int16_t x1, y1;
+  uint16_t textW, textH;
+  tft.getTextBounds(msg, 0, 0, &x1, &y1, &textW, &textH);
+
+  // Adjust so (x, y) is the center
+  int textX = x - textW / 2;
+  int textY = y - textH / 2;
+
+  tft.setCursor(textX, textY);
   tft.print(msg);
 }
 

@@ -8,7 +8,7 @@ void setup() {
   UIinit();
   LogicInit();
   ExternalStorageInit();
-  // timertc.setDS1302Time(0, 8, 1, 5, 25, 4, 2025);
+  // timertc.setDS1302Time(0, 56, 11, 1, 28, 4, 2025);
 }
 
 void loop() {

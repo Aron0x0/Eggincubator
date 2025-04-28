@@ -26,6 +26,7 @@ int humid, lasthumid;
 bool isSetupCalibrationFirstRun = true;
 
 String DATE, LASTDATE, CLOCK, LASTCLOCK;
+String FORMATDATE, LASTFORMATDATE, TOFORMATDATE, LASTTOFORMATDATE;
 
 bool SystemRunning = false;
 
@@ -44,10 +45,10 @@ unsigned long functionDelayTracker[DEVICE_COUNT] = {0};
 
 uint8_t solarOnHour, solarOnMinute, solarOffHour, solarOffMinute;
 // uint8_t temp, humid, maxtemp, mintemp, maxhumid, minhumid;
-uint8_t currHour, currMinute, currDay, currMonth, currYear;
-uint8_t lastHour, lastMinute, lastDay, lastMonth, lastYear;
-uint8_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
-uint8_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
+uint16_t currHour, currMinute, currDay, currMonth, currYear;
+uint16_t lastHour, lastMinute, lastDay, lastMonth, lastYear;
+uint16_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
+uint16_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
 
 const uint8_t Candling[2] = {7, 14};
 const uint8_t UpdateHumid = 19;

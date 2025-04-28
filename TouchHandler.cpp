@@ -32,6 +32,8 @@ void EachFrameListener(int tx, int ty){
     case STATE_ABOUT:
       AboutListener(tx, ty);
       break;
+    case STATE_STATS:
+      StatListener(tx, ty);
   }
 }
 
@@ -40,6 +42,7 @@ void EggIncubatorListener(int tx, int ty){
   if(isTouchInsideCircle(240, 160, 75, tx, ty)){
     Serial.println("/> Action :: Clicked :: START BUTTON");
     SetupStartData();
+    ConvertFormatDateToUI();
     SystemRunning = true;
     MotorDelayStart = millis();
     currentState = STATE_MAIN;
@@ -56,7 +59,7 @@ void EggIncubatorListener(int tx, int ty){
 
 void MainFrameListener(int tx, int ty){
   if(isTouchInsideRectangle(12, 12, 40, 97, tx, ty)){
-    currentState = STATE_SETUP;
+    currentState = STATE_STATS;
   }
 }
 void SetupListener(int tx, int ty){
@@ -102,6 +105,13 @@ void CalibrationListener(int tx, int ty){
   if(isTouchInsideRectangle(428, 0, 52, 56, tx, ty)){
     Serial.println("/> Action :: Clicked :: Calibration Exit Button");
     currentState = STATE_HOME;
+  }
+}
+
+void StatListener(int tx, int ty){
+  if(isTouchInsideRectangle(16, 13, 16, 19, tx, ty)){
+    Serial.println("/> Action :: Clicked :: Stats Exit Button");
+    currentState = STATE_STATS;
   }
 }
 

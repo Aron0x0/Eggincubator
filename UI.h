@@ -15,6 +15,7 @@ void AboutFrame();
 void OtherFrame();
 void TimeAndDateFrame();
 void CalibrationFrame();
+void StatFrame();
 
 void updateTempHumidDisplay();
 void destroyTempHumidDisplay();
@@ -31,7 +32,8 @@ void drawCirclePixelByPixel(int xc, int yc, int r, uint16_t color);
 
 void drawString(String msg, int x, int y, uint16_t size);
 void drawString(String msg, int x, int y, float size, uint16_t COLOR);
-void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool center);
+void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool xcenter);
+void drawString(String msg, int x, int y, int size, uint16_t COLOR, bool xcenter, bool ycenter);
 
 void printTouchPoint(int x, int y);
 

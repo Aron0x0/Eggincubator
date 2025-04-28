@@ -24,7 +24,7 @@ void SystemTimeUpdate(){
   }
   if(DelayFunction(DEVICES, 1000)){
     DebugDeviceStates();
-    PrintDateNow();
+    // PrintDateNow();
   }
 
   if(DelayFunction(EXTERNAL_STORAGE, 10000)){
@@ -63,10 +63,73 @@ void ConvertTimeToUI(){
     suffix = " PM";
   }else if(currHour > 12){
     DisplayHour = currHour - 12;
-    suffix = "PM";
+    suffix = " PM";
   }
   String MinuteStr = currMinute < 10 ? "0" + String(currMinute): String(currMinute);
   CLOCK = String(DisplayHour) + ":" + MinuteStr + suffix;
+}
+
+String ConvertTimeToUI(int hour, int minute){
+  int DisplayHour = hour;
+  String suffix =" AM";
+  if(hour == 0){
+    DisplayHour = 12;
+  }else if(hour == 12){
+    suffix = " PM";
+  }else if(hour > 12){
+    DisplayHour = hour - 12;
+    suffix = " PM";
+  }
+  String MinuteStr = minute < 10 ? "0" + String(minute): String(minute);
+  return (String(DisplayHour) + ":" + MinuteStr + suffix);
+}
+
+void ConvertFormatDateToUI(){
+  FORMATDATE = FormatMonth(beginMonth) + " "+String(beginDay)+", "+String(beginYear);
+  TOFORMATDATE = FormatMonth(toThisMonth) + " "+String(toThisDay)+", "+String(toThisYear);
+  Serial.println(FORMATDATE);
+  Serial.println(TOFORMATDATE);
+}
+
+String FormatMonth(int month){
+  switch(month){
+    case 1:
+      return "January";
+      break;
+    case 2:
+      return "February";
+      break;
+    case 3:
+      return "March";
+      break;
+    case 4:
+      return "April";
+      break;
+    case 5:
+      return "May";
+      break;
+    case 6:
+      return "June";
+      break;
+    case 7:
+      return "July";
+      break;
+    case 8:
+      return "August";
+      break;
+    case 9:
+      return "September";
+      break;
+    case 10:
+      return "October";
+      break;
+    case 11:
+      return "November";
+      break;
+    case 12:
+      return "December";
+      break;
+  }
 }
 
 void SetupStartData(){
@@ -113,8 +176,6 @@ void DebugDeviceStates() {
 
 void UpdateDeviceState(){
   digitalWrite(IOHEATER, deviceState[HEATER] ? LOW : HIGH);
-  // digitalWrite(IOHUMID, deviceState[HUMID] ? HIGH : LOW);
-  // deviceState[HUMID] ? humidSwitchOn() : humidSwitchOff();
   digitalWrite(IOMOTOR, deviceState[MOTOR] ? LOW : HIGH);
   digitalWrite(IOSOLAR, deviceState[SOLAR] ? HIGH : LOW);
 }

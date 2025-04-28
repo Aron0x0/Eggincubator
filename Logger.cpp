@@ -9,32 +9,49 @@
 
 File data;
 
-bool ExternalStorageInit(){
+bool ExternalStorageInit() {
+  bool res = true;
   pinMode(SD_CS, OUTPUT);
 
-  if(!SD.begin(SD_CS)){
+  digitalWrite(TFT_CS, HIGH);   // Disable TFT
+  digitalWrite(SD_CS, LOW); 
+  
+  if (!SD.begin(SD_CS)) {
     Serial.println("/> No External Storage!");
-    return false;
-  } else {
-    data = SD.open("data.txt", FILE_WRITE);
-    if(data) {
-      data.println("DATE, Time, Temperature, Humidity");
-      data.close();
-    }
-    return true;
+    res = false;
   }
+
+  File data = SD.open("data.txt", FILE_WRITE);
+  if (data) {
+    if (data.size() == 0) {  // Only write headers if file is empty
+      data.println("DATE,Time,Temperature,Humidity");
+    }
+    data.close();
+  } else {
+    Serial.println("/> ERROR: Failed to create data.txt!");
+    res = false;
+  }
+  digitalWrite(SD_CS, HIGH);    // Disable SD
+  digitalWrite(TFT_CS, LOW);
+  return res;
 }
 
-void WriteExternalStorage(){
-  data = SD.open("data.txt", FILE_WRITE);
-  if(data) {
-    data.print(DATE);data.print(",");
-    data.print(CLOCK);data.print(",");
-    data.print(temp);data.print(",");
-    data.print(humid);data.println();
+void WriteExternalStorage() {
+  digitalWrite(TFT_CS, HIGH);   // Disable TFT
+  digitalWrite(SD_CS, LOW);
+  File data = SD.open("data.txt", FILE_WRITE);
+  
+  if (data) {
+    data.print(DATE);  data.print(",");
+    data.print(CLOCK); data.print(",");
+    data.print(temp);  data.print(",");
+    data.println(humid);
     data.close();
-  }else {
-    Serial.println("/> ERROR: Failed to load File in External_Storage!");
+  } else {
+    Serial.println("/> ERROR: Failed to open data.txt for writing!");
   }
+  digitalWrite(SD_CS, HIGH);    // Disable SD
+  digitalWrite(TFT_CS, LOW);
 }
+
 
