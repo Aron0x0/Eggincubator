@@ -38,14 +38,15 @@ Make sure you have these installed in the Arduino IDE:
 
 | Component       | Arduino Mega Pin | Notes                          |
 |----------------|------------------|--------------------------------|
-| **RTC CLK**     | 22               | `#define CLK 22`               |
-| **RTC DAT**     | 23               | `#define DAT 23`               |
-| **RTC RST**     | 24               | `#define RST 24`               |
-| **Relay – Solar**   | 25               | `#define IOSOLAR 25`           |
-| **Relay – Heater**  | 26               | `#define IOHEATER 26`          |
-| **Relay – Synchronous Motor** | 27           | `#define IOMOTOR 27`           |
-| **Relay – Humidifier** | 28         | `#define IOHUMID 28`           |
-| **DHT22 Sensor** | 29               | `#define IODHT 29`             |
+| **RTC CLK**     | 23               | `#define CLK 23`               |
+| **RTC DAT**     | 25               | `#define DAT 25`               |
+| **RTC RST**     | 27               | `#define RST 27`               |
+| **Relay – Solar**   | 29               | `#define IOSOLAR 29`           |
+| **Relay – Heater**  | 31               | `#define IOHEATER 31`          |
+| **Relay – Synchronous Motor** | 33           | `#define IOMOTOR 33`           |
+| **Relay – Humidifier** | 35         | `#define IOHUMID 35`           |
+| **DHT22 Sensor** | 49               | `#define IODHT 49`             |
+| **DHT22 Sensor** | 51               | `#define IODHT 51`             |
 | **DHT Type**     | —                | `#define DHTTYPE DHT22`        |
 | **TFT LCD**      | Shield Pins      | Uses multiple Mega pins (plug-in shield) |
 | **TouchScreen**  | A1–A4            | Shared with TFT, configured via `TouchScreen.h` |
