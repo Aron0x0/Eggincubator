@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "UI.h"
 #include "Logic.h"
+#include "BackupData.h"
 
 void EachFrameListener(int tx, int ty){
   switch(currentState){
@@ -19,6 +20,9 @@ void EachFrameListener(int tx, int ty){
         SetupCalibrationAdjustVariable(tx, ty);
         delay(100);
       }
+      if(currentList == LIST2){
+        TimeAndDateSwitch(tx, ty);
+      }
       break;
     case STATE_MENU:
       MenuListener(tx, ty);
@@ -34,6 +38,18 @@ void EachFrameListener(int tx, int ty){
       break;
     case STATE_STATS:
       StatListener(tx, ty);
+      break;
+  }
+}
+
+void TimeAndDateSwitch(int tx, int ty){
+  switch(currentTimeAndDateState){
+    case SHOW_TIME_INFO:
+      showTimeInfoListener(tx, ty);
+      break;
+    case CHANGE_TIME_INFO:
+      changeTimeInfoListener(tx, ty);
+      break;
   }
 }
 
@@ -46,10 +62,13 @@ void EggIncubatorListener(int tx, int ty){
     SystemRunning = true;
     MotorDelayStart = millis();
     currentState = STATE_MAIN;
+    BackupSystemData();
+    delay(1000);
   }
   if(isTouchInsideCircle(379, 215, 55, tx, ty)){
     Serial.println("/> Action :: Clicked :: ABOUT");
-    currentState = STATE_ABOUT;
+    RESET_SYSTEM();
+    // currentState = STATE_ABOUT;
   }
   if(isTouchInsideCircle(81, 235, 75, tx, ty)){
     Serial.println("/> Action :: Clicked :: SETUP");
@@ -58,7 +77,7 @@ void EggIncubatorListener(int tx, int ty){
 }
 
 void MainFrameListener(int tx, int ty){
-  if(isTouchInsideRectangle(12, 12, 40, 97, tx, ty)){
+  if(isTouchInsideRectangle(12, 12, 40, 40, tx, ty)){
     currentState = STATE_STATS;
   }
 }
@@ -109,9 +128,22 @@ void CalibrationListener(int tx, int ty){
 }
 
 void StatListener(int tx, int ty){
-  if(isTouchInsideRectangle(16, 13, 16, 19, tx, ty)){
+  if(isTouchInsideRectangle(426, 13, 40, 40, tx, ty)){
     Serial.println("/> Action :: Clicked :: Stats Exit Button");
-    currentState = STATE_STATS;
+    currentState = STATE_MAIN;
+  }
+  if(isTouchInsideCircle(396, 235, 37, tx, ty)){
+    Serial.println("/> ACTION :: CLICKED :: RESET");
+    SystemRunning = false;
+    beginHour = 0;
+    beginMinute = 0;
+    beginDay = 0;
+    beginMonth = 0;
+    beginYear = 0;
+    Serial.println("/> Action :: Clicked :: ABOUT");
+    ClearBackupSystemData();
+    delay(50);
+    RESET_SYSTEM();
   }
 }
 
@@ -171,6 +203,20 @@ void SetupCalibrationAdjustListener(float* var, int tx, int ty){//x = 420 and y 
     Serial.print("/> CalibrationAdjustListener :: Clicked :: MINUS :: ");Serial.println(*var);
   }
 }
+
+void showTimeInfoListener(int tx, int ty){
+  if(isTouchInsideRectangle(300, 160, 158, 36, tx, ty)){
+    Serial.println("/> ACTION :: CHANGETIME :: CLICKED ");
+    currentTimeAndDateState = CHANGE_TIME_INFO;
+  }
+}
+void changeTimeInfoListener(int tx, int ty){
+  if(isTouchInsideCircle(393, 265, 35, tx, ty)){
+    Serial.println("/> ACTION :: SAVETIME :: CLICKED ");
+    currentTimeAndDateState = SHOW_TIME_INFO;
+  }
+}
+
 
 
 bool isTouchInsideCircle(int cx, int cy, int r, int tx, int ty) {

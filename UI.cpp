@@ -27,14 +27,16 @@ void MainFrame(){
   tft.drawLine(1, 318, 15, 307, BLACK);
 
   updateUiClock(CLOCK, LASTCLOCK, 240, 20);
-  drawString(DATE, 340, 18, 2, WHITE);
+  updateUiDate(DATE, LASTDATE, 400, 35);
+  updateTempHumidDisplay();
+
   drawString("TEMPERATURE:", 40, 55, 3, WHITE);
   drawString("HUMIDITY:", 60, 175, 3, WHITE);
   drawRecWithFrame(280, 73, 151, 47, RED, "MOTOR", BLACK, 3);
   drawRecWithFrame(280, 127, 151, 47, RED, "HUMID", BLACK, 3);
   drawRecWithFrame(280, 181, 151, 47, RED, "HEAT", BLACK, 3);
   drawRecWithFrame(280, 235, 151, 47, RED, "SOLAR", BLACK, 3);
-  updateUiDevice();
+  // updateUiDevice(true);
 }
 void updateTempHumidDisplay(){
   drawString(String(temp)+"c", 30, 90, 7);
@@ -47,7 +49,7 @@ void destroyTempHumidDisplay(){
 }
 
 void SetupFrame(){
-  // tft.fillScreen(GRAY);
+  tft.fillScreen(GRAY);
   drawString("Setup", 185, 12, 4);
   tft.fillRect(22, 49, 127, 39, BLACK);
   tft.fillRect(163, 49, 154, 39, BLACK);
@@ -58,7 +60,6 @@ void SetupFrame(){
   tft.drawRect(5, 92, 467, 223, BLACK);
   tft.drawRect(6, 93, 465, 221, BLACK);
   
-
 }
 
 void AboutFrame(){
@@ -68,6 +69,37 @@ void MenuFrame(){
 void TimeAndDateFrame(){
   tft.fillRect(7, 94, 463, 219, GRAY);
 
+  tft.fillRect(38, 109, 206, 109, WHITE);
+  tft.drawRect(38, 109, 206, 109, BLACK);
+  drawString("DATE",141, 121, 2, BLACK, true, true);
+  drawString("00/00/0000",141, 153, 2, BLACK, true, true);
+  drawString("January 1, 2025",141, 184, 2, BLACK, true, true);
+
+  tft.fillRect(38, 229, 206, 74, WHITE);
+  tft.drawRect(38, 229, 206, 74, BLACK);
+  drawString("TIME", 141, 248, 2, BLACK, true, true);
+  drawString("12:08 AM", 141, 270, 2, BLACK, true, true);
+
+  drawRecWithFrame(300, 160, 158, 45, WHITE, "Change Time", RED, 3);
+  drawString("CHANGE TIME", 378, 185, 2, BLACK, true, true);
+}
+void changeTimeInfoFrame(){
+  tft.fillRect(7, 94, 463, 219, GRAY);
+  drawCircleWithFrame(393, 265, 35, WHITE, "SAVE", BLACK, 2);
+  drawRecWithFrame(38, 109, 206, 109, WHITE, "", BLACK, 1);
+  drawString("DATE", 141, 132, 2, BLACK, true, true);
+  drawString("\"MONTH/DAY/YEAR\"", 141, 151, 1, BLACK, true, true);
+  tft.drawRect(49, 169, 43, 35, BLACK);
+  drawString("/", 101, 187, 3, BLACK, true, true);
+  tft.drawRect(109, 169, 43, 35, BLACK);  
+  drawString("/", 161, 187, 3, BLACK, true, true);
+  tft.drawRect(169, 169, 65, 35, BLACK);
+
+
+  drawRecWithFrame(38, 229, 206, 74, WHITE, "", BLACK, 1);
+  drawString("TIME", 141, 248, 2, BLACK, true, true);
+  // drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size)
+  // drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size) 
 }
 void OtherFrame(){
   tft.fillRect(7, 94, 463, 219, BLACK);
@@ -102,6 +134,7 @@ void CalibrationFrame(){
 
 
 void StatFrame(){
+  // ConvertFormatDateToUI();
   tft.fillRect(16, 13, 448, 293, GRAY);
   tft.drawRect(38, 74, 404, 89, BLACK);
   tft.drawRect(38, 190, 404, 89, BLACK);
@@ -118,6 +151,7 @@ void StatFrame(){
   drawString((ConvertTimeToUI(solarOffHour, solarOffMinute)), 170, 136, 2, darkenColor(YELLOW, 0.2), true, true);
 
   drawString("Error Handler", 240, 207, 2, RED, true, true);
+  drawCircleWithFrame(396, 235, 37, WHITE, "DONE", darkenColor(YELLOW, 0.6), 2);
 }
 
 void updateUIField(float value, float &lastValue, int x, int y) {
@@ -141,6 +175,11 @@ void updateUiClock(String time, String lasttime, int x, int y){
     LASTCLOCK = CLOCK;
   }
 }
+
+void updateUiDate(String date, String lastdate, int x, int y){
+  drawString(lastdate, x, y, 2, GRAY, true, true);
+  drawString(date, x, y, 2, WHITE, true, true);
+}
 void updateUiDevice(){
   const char* deviceNames[DEVICE_COUNT] = {"MOTOR", "HUMID", "HEAT", "SOLAR"};
   const int deviceNamesPosition[DEVICE_COUNT] = {73, 127, 181, 235};
@@ -154,6 +193,20 @@ void updateUiDevice(){
         drawRecWithFrame(280, deviceNamesPosition[i], 151, 47, RED, String(deviceNames[i]), BLACK, 3);
         lastdeviceState[i] = deviceState[i];
       }
+    }
+  }
+}
+void updateUiDevice(bool OnlyOnceRun){
+  const char* deviceNames[DEVICE_COUNT] = {"MOTOR", "HUMID", "HEAT", "SOLAR"};
+  const int deviceNamesPosition[DEVICE_COUNT] = {73, 127, 181, 235};
+
+  for(int i = 0; i < DEVICE_COUNT; i++) {
+    if(deviceState[i]){
+      drawRecWithFrame(280, deviceNamesPosition[i], 151, 47, GREEN, String(deviceNames[i]), BLACK, 3);
+      lastdeviceState[i] = deviceState[i];
+    }else{
+      drawRecWithFrame(280, deviceNamesPosition[i], 151, 47, RED, String(deviceNames[i]), BLACK, 3);
+      lastdeviceState[i] = deviceState[i];
     }
   }
 }

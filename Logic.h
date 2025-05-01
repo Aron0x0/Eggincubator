@@ -5,6 +5,8 @@ void LogicInit();
 void SetupStartData();
 void PrintDateNow();
 
+void RESET_SYSTEM();
+
 void SystemTimeUpdate();
 void SetupDeviceIO();
 void DebugDeviceStates();

@@ -17,12 +17,17 @@ void TimeAndDateFrame();
 void CalibrationFrame();
 void StatFrame();
 
+void drawCurrentDateTimeFrame();
+void changeTimeInfoFrame();
+
 void updateTempHumidDisplay();
 void destroyTempHumidDisplay();
 void updateUiClock(String time, String lasttime, int x, int y);
+void updateUiDate(String date, String lastdate, int x ,int y);
 void updateUIField(float value, float &lastValue, int x, int y);
 void updateUIField(int value, int &lastValue, int x, int y);
 void updateUiDevice();
+void updateUiDevice(bool OnlyOnceRun);
 
 void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size);
 void drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size);

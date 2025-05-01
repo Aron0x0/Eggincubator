@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Utils.h"
 #include "Logger.h"
+#include "UI.h"
 
 void LogicInit() {
   dht.begin();
@@ -22,14 +23,29 @@ void SystemTimeUpdate(){
     ConvertTimeToUI();
     lastHour = currHour; lastMinute = currMinute;
   }
-  if(DelayFunction(DEVICES, 1000)){
-    DebugDeviceStates();
-    // PrintDateNow();
+  if(DATE != LASTDATE){
+    if(currentState == STATE_MAIN){
+      updateUiDate(DATE, LASTDATE, 400, 35);
+    }
+    DATE = String(currMonth) + "/" + String(currDay) + "/" + String(currYear);
+    LASTDATE = DATE;
   }
+  // if(DelayFunction(DEVICES, 1000)){
+  //   DebugDeviceStates();
+  //   // PrintDateNow();
+  // }
 
   if(DelayFunction(EXTERNAL_STORAGE, 10000)){
     WriteExternalStorage();
   }
+}
+
+void RESET_SYSTEM(){
+  Serial.println("/* LOG :: RESETING.....");
+  delay(500);
+  digitalWrite(IORESET, HIGH);
+  delay(50);
+  digitalWrite(IORESET, LOW);
 }
 
 void PrintDateNow(){
@@ -146,6 +162,8 @@ void SetupDeviceIO(){
   pinMode(IOHUMID, OUTPUT);
   pinMode(IOSOLAR, OUTPUT);
   pinMode(IOMOTOR, OUTPUT);
+  pinMode(IORESET, OUTPUT);
+  digitalWrite(IORESET, LOW);
   digitalWrite(IOMOTOR, HIGH);
   digitalWrite(IOHEATER, HIGH);
 }

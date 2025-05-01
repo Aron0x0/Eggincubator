@@ -1,57 +1,53 @@
 #include <SPI.h>
 #include <SD.h>
-#include "Config.h"
+#include "Config.h"  // Make sure DATE, CLOCK, temp, humid are defined here
 
-#define TFT_CS   10
-#define TFT_DC   9
-#define TFT_RST  8
-#define SD_CS    4
-
-File data;
+#define SD_CS 53  // SD Chip Select pin for Arduino Mega
 
 bool ExternalStorageInit() {
+  // if (!SD.begin(SD_CS)) {
+  //   Serial.println("initialization failed. Things to check:");
+  //   Serial.println("1. is a card inserted?");
+  //   Serial.println("2. is your wiring correct?");
+  //   Serial.println("3. did you change the chipSelect pin to match your shield or module?");
+  //   Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
+  //   while (true);
+  // }
+  // Serial.println("initialization done.");
   bool res = true;
-  pinMode(SD_CS, OUTPUT);
 
-  digitalWrite(TFT_CS, HIGH);   // Disable TFT
-  digitalWrite(SD_CS, LOW); 
-  
   if (!SD.begin(SD_CS)) {
     Serial.println("/> No External Storage!");
     res = false;
+  } else {
+    Serial.println("/> Good External Storage!");
+
+    File data = SD.open("data.txt", FILE_WRITE);
+    if (data) {
+      if (data.size() == 0) {
+        data.println("DATE,Time,Temperature,Humidity");
+      }
+      data.close();
+      Serial.println("Wrting...");
+    } else {
+      Serial.println("/> ERROR: Failed to create data.txt!");
+      res = false;
+    }
   }
 
-  File data = SD.open("data.txt", FILE_WRITE);
-  if (data) {
-    if (data.size() == 0) {  // Only write headers if file is empty
-      data.println("DATE,Time,Temperature,Humidity");
-    }
-    data.close();
-  } else {
-    Serial.println("/> ERROR: Failed to create data.txt!");
-    res = false;
-  }
-  digitalWrite(SD_CS, HIGH);    // Disable SD
-  digitalWrite(TFT_CS, LOW);
   return res;
 }
 
 void WriteExternalStorage() {
-  digitalWrite(TFT_CS, HIGH);   // Disable TFT
-  digitalWrite(SD_CS, LOW);
   File data = SD.open("data.txt", FILE_WRITE);
   
   if (data) {
-    data.print(DATE);  data.print(",");
-    data.print(CLOCK); data.print(",");
-    data.print(temp);  data.print(",");
+    data.print(DATE);   data.print(",");
+    data.print(CLOCK);  data.print(",");
+    data.print(temp);   data.print(",");
     data.println(humid);
     data.close();
   } else {
     Serial.println("/> ERROR: Failed to open data.txt for writing!");
   }
-  digitalWrite(SD_CS, HIGH);    // Disable SD
-  digitalWrite(TFT_CS, LOW);
 }
-
-

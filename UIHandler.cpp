@@ -2,6 +2,7 @@
 #include "TouchHandler.h"
 #include "Config.h"
 #include "UI.h"
+#include <avr/wdt.h>
 
 void setupData(){
   maxtemp = 37.5;
@@ -12,7 +13,13 @@ void setupData(){
   solarOnMinute = 0;
   solarOffHour = 6;
   solarOffMinute = 0;
-  DATE = "00/00/0000";
+  timertc.updateTime();
+  DATE = String(timertc.month) + "/" + String(timertc.dayofmonth) + "/" + String(timertc.year);
+  if(timertc.month >= 13 || timertc.dayofmonth >= 32 ) {
+    timertc.setDS1302Time(0, 0, 0, 0, 0, 0, 2025);
+    // wdt_enable(WDTO_15MS);
+    // while(1);
+  }
 }
 
 void UIinit() {
@@ -43,7 +50,6 @@ void FrameLoop() {
     updateUiDevice();
   }
 
-
   if(currentState == STATE_SETUP){
     if(currentList != lastList){
       drawCurrentList();
@@ -57,6 +63,9 @@ void FrameLoop() {
       isSetupCalibrationFirstRun = false;
       if(currentListVar != lastListVar){
       }
+    }
+    if(currentList == LIST2){
+      drawCurrentDateTimeFrame();
     }
   }
   if(p.z > minpressure && p.z < maxpressure){
@@ -81,7 +90,20 @@ void drawCurrentList(){
   }
 }
 
-
+void drawCurrentDateTimeFrame(){
+  if(currentTimeAndDateState != lastTimeAndDateState){
+    switch(currentTimeAndDateState){
+      case SHOW_TIME_INFO:
+        TimeAndDateFrame();
+        lastTimeAndDateState = currentTimeAndDateState;
+        break;
+      case CHANGE_TIME_INFO:
+        changeTimeInfoFrame();
+        lastTimeAndDateState = currentTimeAndDateState;
+        break;
+    }
+  }
+}
 
 void drawCurrentScreen(){
   switch(currentState){
@@ -90,6 +112,9 @@ void drawCurrentScreen(){
       break;
     case STATE_MAIN:
       MainFrame();
+      break;
+    case STATE_STATS:
+      StatFrame();
       break;
     case STATE_SETUP:
       SetupFrame();
@@ -107,9 +132,7 @@ void drawCurrentScreen(){
     case STATE_ABOUT:
       AboutFrame();
       break;
-    case STATE_STATS:
-      StatFrame();
-      break;
+    
   }
 }
 

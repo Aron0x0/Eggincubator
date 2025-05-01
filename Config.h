@@ -5,18 +5,20 @@
 #include <DHT.h>
 #include <virtuabotixRTC.h>
 
-#define CLK 23
-#define DAT 25
-#define RST 27
+#define CLK 22
+#define DAT 23
+#define RST 24
 
-#define IOSOLAR 29
+#define IOMOTOR 28
+#define IOSOLAR 33
 #define IOHEATER 31
-#define IOMOTOR 33
 #define IOHUMID 35
 
-#define IODHT 49
+#define IODHT 29
 
 #define DHTTYPE DHT22
+
+#define IORESET 48
 
 
 #define BLACK   0x0000
@@ -58,6 +60,12 @@ enum SetupList {
   LIST2,
   LIST3
 };
+
+enum TimeAndDate {
+  SHOW_TIME_INFO,
+  CHANGE_TIME_INFO
+};
+
 enum SetupCalibrationList {
   MAXTEMP,
   MINTEMP,
@@ -100,7 +108,7 @@ extern TSPoint p;
 extern virtuabotixRTC timertc;//CLock, IO, CeR_ST
 extern DHT dht;
 
-
+extern TimeAndDate currentTimeAndDateState, lastTimeAndDateState;
 extern FrameState currentState, lastState;
 extern SetupList currentList, lastList;
 extern SetupCalibrationList currentListVar, lastListVar;

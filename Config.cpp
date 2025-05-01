@@ -7,6 +7,9 @@ TSPoint p;
 virtuabotixRTC timertc(CLK, DAT, RST);// virtuabotixRTC(DATA, CLK, RST)
 DHT dht(IODHT, DHTTYPE);
 
+TimeAndDate currentTimeAndDateState = SHOW_TIME_INFO;
+TimeAndDate lastTimeAndDateState = SHOW_TIME_INFO;
+
 FrameState currentState = STATE_HOME;
 FrameState lastState = STATE_HOME;
 
@@ -42,6 +45,9 @@ bool devices[DEVICE_COUNT] = { false };
 
 unsigned long timeExecutionDelay[DEVICE_COUNT] = {0};
 unsigned long functionDelayTracker[DEVICE_COUNT] = {0};
+
+uint8_t EditHour, lastEditHour, EditMinute, lastEditMinute;
+uint16_t EditMonth, lastEditMonth, EditDay, lastEditDay, EditYear, LastEditYear;
 
 uint8_t solarOnHour, solarOnMinute, solarOffHour, solarOffMinute;
 // uint8_t temp, humid, maxtemp, mintemp, maxhumid, minhumid;
