@@ -5,11 +5,15 @@
 #include <DHT.h>
 #include <virtuabotixRTC.h>
 
+// #define CLK 23
+// #define DAT 25
+// #define RST 27
 #define CLK 22
 #define DAT 23
 #define RST 24
 
-#define IOMOTOR 28
+
+#define IOMOTOR 28 // 29
 #define IOSOLAR 33
 #define IOHEATER 31
 #define IOHUMID 35
@@ -43,6 +47,12 @@
 
 #define minpressure 10
 #define maxpressure 1000
+
+#define RADIUS 90
+#define TEMP_X 120
+#define TEMP_Y 160
+#define HUMID_X 360
+#define HUMID_Y 160
 
 enum FrameState {
   STATE_HOME,
@@ -82,6 +92,7 @@ enum DeviceState {
   DEVICE_COUNT
 };
 
+
 enum Debug {
   DEVICES,
   EXTERNAL_STORAGE,
@@ -96,6 +107,7 @@ struct TimeExecution {
   bool active;
 };
 
+extern bool LASTMOTOR, LASTHUMID, LASTHEATER, LASTSOLAR;
 extern unsigned long MotorDelayStart;
 extern unsigned long MotorActiveStart;
 extern unsigned long MotorLastTime;

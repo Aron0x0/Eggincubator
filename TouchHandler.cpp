@@ -77,7 +77,7 @@ void EggIncubatorListener(int tx, int ty){
 }
 
 void MainFrameListener(int tx, int ty){
-  if(isTouchInsideRectangle(12, 12, 40, 40, tx, ty)){
+  if(isTouchInsideCircle(240, 280, 20, tx, ty)){
     currentState = STATE_STATS;
   }
 }

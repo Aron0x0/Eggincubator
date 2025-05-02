@@ -37,6 +37,7 @@ void SystemTimeUpdate(){
 
   if(DelayFunction(EXTERNAL_STORAGE, 10000)){
     WriteExternalStorage();
+    Serial.println("/! Writing....");
   }
 }
 

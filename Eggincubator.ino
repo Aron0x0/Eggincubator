@@ -9,20 +9,13 @@ void setup() {
   UIinit();
   LogicInit();
   ExternalStorageInit();
-  // timertc.setDS1302Time(0, 56, 21, 4, 1, 5, 2025);
+  // timertc.setDS1302Time(0, 55, 21, 5, 2, 6, 2025);
   ReadBackupSystemData();
   if(SystemRunning){
-    currentState = STATE_MAIN;
-    Serial.println(beginHour);
-    Serial.println(beginMinute);
-    Serial.println(beginMonth);
-    Serial.println(beginDay);
-    Serial.println(beginYear);
-    FORMATDATE = "";
-    TOFORMATDATE = "";
     PredictedEndDay(beginHour, beginMinute, beginMonth, beginDay, beginYear, TotalOperatingDay);
     ConvertFormatDateToUI();
     MotorDelayStart = millis();
+    currentState = STATE_MAIN;
   }
 }
 

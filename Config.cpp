@@ -16,6 +16,11 @@ FrameState lastState = STATE_HOME;
 SetupList currentList = LIST1;
 SetupList lastList = LIST1;
 
+bool LASTMOTOR = false;
+bool LASTHUMID = false;
+bool LASTHEATER = false;
+bool LASTSOLAR = false;
+
 SetupCalibrationList currentListVar = NONE;
 SetupCalibrationList lastListVar = NONE;
 
@@ -63,5 +68,5 @@ const uint16_t TotalOperatingDay = 21;
 unsigned long MotorLastTime;
 unsigned long MotorDelayStart = 0;
 unsigned long MotorActiveStart = 0;
-float MotorDelay = 20;
-float MotorActiveDuration = 10;
+float MotorDelay = 10; 
+float MotorActiveDuration = 24;// 60/2.5 = 24 seconds per rotation. // 60/3 = 20

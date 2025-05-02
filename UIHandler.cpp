@@ -24,7 +24,7 @@ void setupData(){
 
 void UIinit() {
   tft.begin(tft.readID());
-  tft.setRotation(1);
+  tft.setRotation(3);
   tft.fillScreen(BLACK);
   setupData();
   EggIncubatorFrame();
@@ -41,13 +41,26 @@ void FrameLoop() {
   }
 
   if (currentState == STATE_MAIN) {
-    if(lasttemp != temp || lasthumid != humid){
-      destroyTempHumidDisplay();
-      updateTempHumidDisplay();
+    if(lasttemp != temp){
+      // destroyTempHumidDisplay();
+      // updateTempHumidDisplay();
+      drawGaugeValue(TEMP_X, TEMP_Y, temp, 0, 50, RED, "c", true);
+      lasttemp = temp; 
+    }
+    if(lasthumid != humid){
+      drawGaugeValue(HUMID_X, HUMID_Y, humid, 0, 100, BLUE, "%", false);
+      lasthumid = humid;
+    }
+    for(int i=0;i < DEVICE_COUNT;i++){
+      if(deviceState[i] != lastdeviceState[i]){
+        drawDeviceIndicators();
+        lastdeviceState[i] = deviceState[i];
+        // Serial.println("/> Update State UI Of Devices/.");
+      }
     }
 
     updateUiClock(CLOCK, LASTCLOCK, 240, 20); // drawString("99/99 AM", 240, 20, 3, WHITE, true);
-    updateUiDevice();
+    // updateUiDevice();
   }
 
   if(currentState == STATE_SETUP){
@@ -69,8 +82,11 @@ void FrameLoop() {
     }
   }
   if(p.z > minpressure && p.z < maxpressure){
-    int x = map(p.y, ts_maxy, ts_miny, 0, 490);
-    int y = map(p.x, ts_minx, ts_maxx, 0, 325); 
+    // int x = map(p.y, ts_maxy, ts_miny, 0, 490);
+    // int y = map(p.x, ts_minx, ts_maxx, 0, 325); 
+    int x = map(p.y, ts_miny, ts_maxy, 0, 490); // screen X
+    int y = map(p.x, ts_maxx, ts_minx, 0, 325); 
+
     printTouchPoint(x, y);
     EachFrameListener(x, y);
   }
@@ -111,7 +127,8 @@ void drawCurrentScreen(){
       EggIncubatorFrame();
       break;
     case STATE_MAIN:
-      MainFrame();
+      // MainFrame();
+      drawNewMainFrame();
       break;
     case STATE_STATS:
       StatFrame();

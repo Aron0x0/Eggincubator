@@ -6,7 +6,7 @@
 #include "UIHandler.h"
 
 void EggIncubatorFrame(){
-  tft.setRotation(1);
+  // tft.setRotation(1); 
   tft.fillScreen(BLACK);
   tft.fillRect(81, 14, 318, 61, BLACK);
   drawString("Egg Incubator", 125, 33, 3, WHITE);
@@ -18,6 +18,8 @@ void EggIncubatorFrame(){
 }
 void MainFrame(){
   tft.fillScreen(GRAY);
+
+  drawCircleWithFrame(38, 34, 17, GRAY, "?", BLACK, 3, BLACK);
   tft.drawRect(15, 12, 450, 295, BLACK);
   tft.drawRect(1, 1, 478, 318, BLACK);
 
@@ -38,6 +40,117 @@ void MainFrame(){
   drawRecWithFrame(280, 235, 151, 47, RED, "SOLAR", BLACK, 3);
   // updateUiDevice(true);
 }
+
+void drawNewMainFrame(){
+  tft.fillScreen(BLACK);
+  drawGaugeBase(TEMP_X, TEMP_Y, "TEMP", 0, 50);
+  drawGaugeBase(HUMID_X, HUMID_Y, "HUM", 0, 100);
+  drawDeviceIndicators(); 
+  drawCircleWithFrame(240, 280, 20, BLACK, "?", WHITE, 2, WHITE);
+}
+
+
+void drawGaugeBase(int cx, int cy, const char* label, int minVal, int maxVal) {
+  tft.setTextSize(3);
+  tft.setTextColor(WHITE);
+  tft.setCursor(cx - 30, cy + (RADIUS - 10));
+  tft.print(label);
+
+  for (int i = 0; i <= 10; i++) {
+    float percent = i / 10.0;
+    float angle = radians(135 + percent * 270);
+    int x = cx + (RADIUS + 20) * cos(angle);
+    int y = cy + (RADIUS + 20) * sin(angle);
+
+    char buf[6];
+    int value = minVal + (maxVal - minVal) * percent;
+    sprintf(buf, "%d", value);
+
+    tft.setTextSize(1);
+    tft.setCursor(x - 7, y - 5);
+    tft.print(buf);
+  }
+
+  tft.fillCircle(cx, cy, RADIUS - 10, BLACK);
+
+}
+
+void drawGaugeValue(int cx, int cy, float value, int minVal, int maxVal, uint16_t color, const char* unit, bool showDecimal) {
+  value = constrain(value, minVal, maxVal);
+  float angleStart = 135;
+  float angleEnd = 135 + ((value - minVal) / (maxVal - minVal)) * 270;
+
+  tft.fillCircle(cx, cy, RADIUS - 10, BLACK);
+
+  for (float angle = angleStart; angle < angleEnd; angle += 1.5) {
+    float rad = radians(angle);
+    for (int r = RADIUS - 10; r <= RADIUS; r++) {
+      int x = cx + r * cos(rad);
+      int y = cy + r * sin(rad);
+      tft.drawPixel(x, y, color);
+    }
+  }
+
+  char buf[10], fullText[12];
+  if (showDecimal) {
+    dtostrf(value, 4, 1, buf);
+  } else {
+    sprintf(buf, "%d", (int)value);
+  }
+  sprintf(fullText, "%s%s", buf, unit);
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  tft.setTextSize(4);
+  tft.setTextColor(WHITE);
+  tft.getTextBounds(fullText, cx, cy, &x1, &y1, &w, &h);
+
+  tft.fillRect(cx - w / 2 - 5, cy - h / 2 - 5, w + 10, h + 10, BLACK);
+  tft.setCursor(cx - w / 2, cy - h / 2);
+  tft.print(fullText);
+}
+
+// ---- Triangle Drawing Utilities ----
+
+void drawRightTriangleAtCorner(int x, int y, int size, uint16_t color, int rotationDeg) {
+  float angle = radians(rotationDeg);
+
+  // Define the 3 points for the right triangle (before rotation)
+  int x0 = 0, y0 = 0;               // Top-left corner (right angle)
+  int x1 = size, y1 = 0;             // Top-right corner (along the base)
+  int x2 = 0, y2 = size;            // Bottom-left corner (along the height)
+
+  // Rotate each point based on the rotation degree
+  int rx0 = x + x0 * cos(angle) - y0 * sin(angle);
+  int ry0 = y + x0 * sin(angle) + y0 * cos(angle);
+
+  int rx1 = x + x1 * cos(angle) - y1 * sin(angle);
+  int ry1 = y + x1 * sin(angle) + y1 * cos(angle);
+
+  int rx2 = x + x2 * cos(angle) - y2 * sin(angle);
+  int ry2 = y + x2 * sin(angle) + y2 * cos(angle);
+
+  // Draw the base triangle (filled)
+  tft.fillTriangle(rx0, ry0, rx1, ry1, rx2, ry2, color);
+}
+
+void drawDeviceIndicators() {
+  int size = 60;
+
+  // Use device states to set colors
+  uint16_t color1 = deviceState[MOTOR] ? GREEN : RED;   // Color for device 1 (Top-left)
+  uint16_t color2 = deviceState[HEATER] ? GREEN : RED;   // Color for device 2 (Top-right)
+  uint16_t color3 = deviceState[HUMID] ? GREEN : RED;   // Color for device 3 (Bottom-right)
+  uint16_t color4 = deviceState[SOLAR] ? GREEN : RED;   // Color for device 4 (Bottom-left)
+
+  // Draw right triangles at each corner with the corresponding color
+  drawRightTriangleAtCorner(0, 0, size, color1, 0);       // Top-left
+  drawRightTriangleAtCorner(479, 0, size, color2, 90);    // Top-right
+  drawRightTriangleAtCorner(479, 319, size, color3, 180); // Bottom-right
+  drawRightTriangleAtCorner(0, 319, size, color4, 270);   // Bottom-left
+}
+
+
 void updateTempHumidDisplay(){
   drawString(String(temp)+"c", 30, 90, 7);
   drawString(String(humid)+"%", 90, 210, 7);
@@ -135,23 +248,31 @@ void CalibrationFrame(){
 
 void StatFrame(){
   // ConvertFormatDateToUI();
-  tft.fillRect(16, 13, 448, 293, GRAY);
+  // BlurEffectScreen();
+  BlurEffect(0, 0, 480, 14);
+  BlurEffect(0, 306, 480, 14);
+  BlurEffect(0, 14, 16, 292);
+  BlurEffect(466, 14, 16, 292);
+  tft.fillRect(16, 13, 448, 293, darkenColor(GRAY, 0.4));
+  tft.drawRect(16, 13, 448, 293, YELLOW);
+
+  drawCircleWithFrame(441, 34, 17, GRAY, "<", WHITE, 3, WHITE);
   tft.drawRect(38, 74, 404, 89, BLACK);
   tft.drawRect(38, 190, 404, 89, BLACK);
-  drawString("Stats", 240, 25, 4, BLACK, true);
+  drawString("Stats", 240, 25, 4, WHITE, true);
   drawString("Solar Time", 131, 91, 2, YELLOW, true, true);
   drawString("Begin", 334, 91, 2, GREEN, true, true);
   drawString("End", 334, 129, 2, RED, true, true);
 
-  drawString(FORMATDATE, 335, 110, 2, darkenColor(GREEN, 0.2), true, true);
-  drawString(TOFORMATDATE, 335, 148, 2, darkenColor(RED, 0.2), true, true);
-  drawString("Start:", 85, 114, 2, darkenColor(YELLOW, 0.2), true, true);
-  drawString("End:", 85, 136, 2, darkenColor(YELLOW, 0.2), true, true);
-  drawString((ConvertTimeToUI(solarOnHour, solarOnMinute)), 170, 114, 2, darkenColor(YELLOW, 0.2), true, true);
-  drawString((ConvertTimeToUI(solarOffHour, solarOffMinute)), 170, 136, 2, darkenColor(YELLOW, 0.2), true, true);
+  drawString(FORMATDATE, 335, 110, 2, darkenColor(GREEN, 0.7), true, true);
+  drawString(TOFORMATDATE, 335, 148, 2, darkenColor(RED, 0.7), true, true);
+  drawString("Start:", 85, 114, 2, darkenColor(YELLOW, 0.7), true, true);
+  drawString("End:", 85, 136, 2, darkenColor(YELLOW, 0.7), true, true);
+  drawString((ConvertTimeToUI(solarOnHour, solarOnMinute)), 170, 114, 2, darkenColor(YELLOW, 0.7), true, true);
+  drawString((ConvertTimeToUI(solarOffHour, solarOffMinute)), 170, 136, 2, darkenColor(YELLOW, 0.7), true, true);
 
   drawString("Error Handler", 240, 207, 2, RED, true, true);
-  drawCircleWithFrame(396, 235, 37, WHITE, "DONE", darkenColor(YELLOW, 0.6), 2);
+  drawCircleWithFrame(396, 235, 37, GRAY, "DONE", darkenColor(GREEN, 0.8), 2, GREEN);
 }
 
 void updateUIField(float value, float &lastValue, int x, int y) {
@@ -169,7 +290,7 @@ void updateUIField(int value, int &lastValue, int x, int y) {
 
 void updateUiClock(String time, String lasttime, int x, int y){
   if(CLOCK != LASTCLOCK && currentState == STATE_MAIN){
-    drawString(LASTCLOCK, 240, 20, 3, GRAY, true);
+    drawString(LASTCLOCK, 240, 20, 3, BLACK, true);
     drawString(CLOCK, 240, 20, 3, WHITE, true);
     Serial.print("/> LOG :: DRAWING :: CLOCK :: ");Serial.println(CLOCK);
     LASTCLOCK = CLOCK;
@@ -229,6 +350,26 @@ void drawCircleWithFrame(int x, int y, int r, int color, String label, int textC
   tft.setCursor(textX, textY);
   tft.print(label);
 }
+
+void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor) {
+  tft.fillCircle(x, y, r, color);
+  tft.drawCircle(x, y, r, frameColor);
+  tft.drawCircle(x, y, getPercent(r, 90), frameColor);
+
+  tft.setTextSize(size);
+  tft.setTextColor(textColor);
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  tft.getTextBounds(label, 0, 0, &x1, &y1, &w, &h);
+
+  int textX = x - w / 2;
+  int textY = y - h / 2 - y1;
+
+  tft.setCursor(textX, textY);
+  tft.print(label);
+}
+
 
 void drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size) {
   // Outer rectangle
@@ -345,6 +486,42 @@ void drawCirclePixelByPixel(int xc, int yc, int r, uint16_t color) {
         // delay(5); // uncomment for visible drawing animation
     }
 }
+
+void drawFakeBlurOverlay(int x, int y, int w, int h) {
+  for (int i = x; i < x + w; i += 2) {
+    for (int j = y; j < y + h; j += 2) {
+      tft.drawPixel(i, j, GRAY);  // Or use DARKGRAY for stronger effect
+    }
+  }
+}
+
+void drawDimmedBox(int x, int y, int w, int h, uint16_t overlayColor) {
+  tft.fillRect(x, y, w, h, overlayColor); // Try DARKGRAY or a muted color
+}
+
+void drawHatchBlur(int x, int y, int w, int h) {
+  for (int i = x; i < x + w; i++) {
+    for (int j = y; j < y + h; j++) {
+      if ((i + j) % 4 == 0) {
+        tft.drawPixel(i, j, GRAY);
+      }
+    }
+  }
+}
+
+void BlurEffect(int x, int y, int w, int h){
+  // drawDimmedBox(x, y, w, h, GRAY);        // Base dim
+  drawFakeBlurOverlay(x, y, w, h);        // Dithered overlay
+  // drawHatchBlur(x, y, w, h);  
+}
+
+void BlurEffectScreen(){
+  // drawDimmedBox(0, 0, 480, 320, GRAY);        // Base dim
+  // drawFakeBlurOverlay(0, 0, 480, 320);        // Dithered overlay
+  drawHatchBlur(0, 0, 480, 320);              // Optional texture
+
+}
+
 
 void printTouchPoint(int x, int y){
   Serial.print(" (");Serial.print(x);Serial.print(", ");Serial.print(y);
