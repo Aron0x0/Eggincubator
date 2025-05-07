@@ -46,7 +46,8 @@ void drawNewMainFrame(){
   drawGaugeBase(TEMP_X, TEMP_Y, "TEMP", 0, 50);
   drawGaugeBase(HUMID_X, HUMID_Y, "HUM", 0, 100);
   drawDeviceIndicators(); 
-  drawCircleWithFrame(240, 280, 20, BLACK, "?", WHITE, 2, WHITE);
+  drawCircleWithFrame(240, 280, 20, BLACK, "?", WHITE, 2, WHITE, 80, 2);
+  // void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize, int LabelAdjustment)
 }
 
 
@@ -180,42 +181,64 @@ void AboutFrame(){
 void MenuFrame(){
 }
 void TimeAndDateFrame(){
+  // ConvertFormatDateToUI();
   tft.fillRect(7, 94, 463, 219, GRAY);
-
   tft.fillRect(38, 109, 206, 109, WHITE);
   tft.drawRect(38, 109, 206, 109, BLACK);
   drawString("DATE",141, 121, 2, BLACK, true, true);
-  drawString("00/00/0000",141, 153, 2, BLACK, true, true);
-  drawString("January 1, 2025",141, 184, 2, BLACK, true, true);
+  drawString((String(currMonth)+"/"+String(currDay)+"/"+String(currYear)),141, 163, 3, BLACK, true, true);
+  drawString(ConvertFormatDateToUI(true),141, 194, 3, BLACK, true, true);
 
   tft.fillRect(38, 229, 206, 74, WHITE);
   tft.drawRect(38, 229, 206, 74, BLACK);
   drawString("TIME", 141, 248, 2, BLACK, true, true);
-  drawString("12:08 AM", 141, 270, 2, BLACK, true, true);
+  drawString(CLOCK, 141, 280, 3, BLACK, true, true);
 
   drawRecWithFrame(300, 160, 158, 45, WHITE, "Change Time", RED, 3);
   drawString("CHANGE TIME", 378, 185, 2, BLACK, true, true);
+  drawRecWithFrame(299, 239, 158, 36, WHITE, "Set Solar Mode", RED, 3);
 }
 void changeTimeInfoFrame(){
   tft.fillRect(7, 94, 463, 219, GRAY);
-  drawCircleWithFrame(393, 265, 35, WHITE, "SAVE", BLACK, 2);
-  drawRecWithFrame(38, 109, 206, 109, WHITE, "", BLACK, 1);
-  drawString("DATE", 141, 132, 2, BLACK, true, true);
-  drawString("\"MONTH/DAY/YEAR\"", 141, 151, 1, BLACK, true, true);
-  tft.drawRect(49, 169, 43, 35, BLACK);
-  drawString("/", 101, 187, 3, BLACK, true, true);
-  tft.drawRect(109, 169, 43, 35, BLACK);  
-  drawString("/", 161, 187, 3, BLACK, true, true);
-  tft.drawRect(169, 169, 65, 35, BLACK);
+  drawString("TIME", 140, 128, 4, BLACK, true, true);
+  drawRecWithFrame(47, 148, 51, 46, WHITE, String(changeHour), BLACK, 3);
+  drawRecWithFrame(114, 148, 51, 46, WHITE, String(changeMinute), BLACK, 3);
+  drawRecWithFrame(181, 148, 51, 46, WHITE, (changeAmPm ? "AM":"PM"), BLACK, 3);
 
+  drawString("DATE", 140, 221, 4, BLACK, true, true);
+  drawRecWithFrame(22, 242, 51, 46, WHITE,  String(changeMonth), BLACK, 3);
+  drawRecWithFrame(89, 242, 51, 46, WHITE, String(changeDay), BLACK, 3);
+  drawRecWithFrame(156, 242, 100, 46, WHITE, String(changeYear), BLACK, 3);
+  drawCircleWithFrame(320, 165, 40, WHITE, "+", BLACK, 8, GREEN, 75);
+  drawCircleWithFrame(320, 253, 40, WHITE, "-", BLACK, 8, RED, 75);
 
-  drawRecWithFrame(38, 229, 206, 74, WHITE, "", BLACK, 1);
-  drawString("TIME", 141, 248, 2, BLACK, true, true);
+  drawCircleWithFrame(416, 204, 50, WHITE, "SAVE", BLACK, 3, YELLOW, 80);
   // drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size)
   // drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size) 
 }
+void changeTimeSolarFrame(){
+  tft.fillRect(7, 94, 463, 219, GRAY);
+  drawString("Solar Mode Setup", 240, 110, 2, BLACK, true, true);
+
+  drawRecWithFrame(28, 149, 55, 55, WHITE, Str(changeSolarOnHour), BLACK, 3);
+  drawRecWithFrame(121, 149, 55, 55, WHITE, Str(changeSolarOnMinute), BLACK, 3);
+  drawRecWithFrame(214, 149, 55, 55, WHITE, Str(changeSolarOnAmPm), BLACK, 3);
+  drawRecWithFrame(28, 242, 55, 55, WHITE, Str(changeSolarOffHour), BLACK, 3);
+  drawRecWithFrame(121, 242, 55, 55, WHITE, Str(changeSolarOffMinute), BLACK, 3);
+  drawRecWithFrame(214, 242, 55, 55, WHITE, Str(changeSolarOffAmPm), BLACK, 3);
+
+  drawCircleWithFrame(326, 172, 40, WHITE, "+", BLACK, 8, BLACK, 80);
+  drawCircleWithFrame(326, 262, 40, WHITE, "-", BLACK, 8, BLACK, 80);
+  drawCircleWithFrame(412, 217, 40, WHITE, "SAVE", BLACK, 6, BLACK, 80);
+}
 void OtherFrame(){
   tft.fillRect(7, 94, 463, 219, BLACK);
+  drawString("Test Mode",240, 110, 2, WHITE, true, true);
+  drawCircleWithFrame(63, 162, 28, BLACK, "A", WHITE, 5, WHITE, 80);
+  drawCircleWithFrame(153, 162, 28, BLACK, "B", WHITE, 5, WHITE, 80);
+  drawCircleWithFrame(243, 162, 28, BLACK, "C", WHITE, 5, WHITE, 80);
+  drawCircleWithFrame(333, 162, 28, BLACK, "D", WHITE, 5, WHITE, 80);
+  drawCircleWithFrame(418, 162, 28, BLACK, "E", WHITE, 5, WHITE, 80);
 }
 void CalibrationFrame(){
   int xlistbox = 170;
@@ -332,25 +355,27 @@ void updateUiDevice(bool OnlyOnceRun){
   }
 }
 
-void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size){
-
+// Version without custom frame color (uses GRAY)
+void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size) {
   tft.fillCircle(x, y, r, color);
   tft.drawCircle(x, y, r, GRAY);
   tft.drawCircle(x, y, getPercent(r, 90), GRAY);
-  tft.setTextSize(size); // adjust as needed
+
+  tft.setTextSize(size);
   tft.setTextColor(textColor);
 
   int16_t x1, y1;
   uint16_t w, h;
   tft.getTextBounds(label, 0, 0, &x1, &y1, &w, &h);
 
-  int textX = x - w / 2;
-  int textY = y - h / 2;
+  int textX = x - w / 2 - (x1 - 4);
+  int textY = y - h / 2 - (y1 - 4);
 
   tft.setCursor(textX, textY);
   tft.print(label);
 }
 
+// Version with custom frame color
 void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor) {
   tft.fillCircle(x, y, r, color);
   tft.drawCircle(x, y, r, frameColor);
@@ -363,12 +388,51 @@ void drawCircleWithFrame(int x, int y, int r, int color, String label, int textC
   uint16_t w, h;
   tft.getTextBounds(label, 0, 0, &x1, &y1, &w, &h);
 
-  int textX = x - w / 2;
-  int textY = y - h / 2 - y1;
+  int textX = x - w / 2 - (x1 - 4);
+  int textY = y - h / 2 - (y1 - 4);
 
   tft.setCursor(textX, textY);
   tft.print(label);
 }
+
+void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize) {
+  tft.fillCircle(x, y, r, color);
+  tft.drawCircle(x, y, r, frameColor);
+  tft.drawCircle(x, y, getPercent(r, frameSize), frameColor);
+
+  tft.setTextSize(size);
+  tft.setTextColor(textColor);
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  tft.getTextBounds(label, 0, 0, &x1, &y1, &w, &h);
+
+  int textX = x - w / 2 - (x1 - 4);
+  int textY = y - h / 2 - (y1 - 4);
+
+  tft.setCursor(textX, textY);
+  tft.print(label);
+}
+
+void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize, int LabelAdjustment) {
+  tft.fillCircle(x, y, r, color);
+  tft.drawCircle(x, y, r, frameColor);
+  tft.drawCircle(x, y, getPercent(r, frameSize), frameColor);
+
+  tft.setTextSize(size);
+  tft.setTextColor(textColor);
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  tft.getTextBounds(label, 0, 0, &x1, &y1, &w, &h);
+
+  int textX = x - w / 2 - (x1 - LabelAdjustment);
+  int textY = y - h / 2 - (y1 - LabelAdjustment);
+
+  tft.setCursor(textX, textY);
+  tft.print(label);
+}
+
 
 
 void drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size) {

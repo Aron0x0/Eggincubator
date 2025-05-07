@@ -12,6 +12,11 @@ auto SecondsToMillis = [] (float Time) -> unsigned long {
   return (Time * 1000);
 };
 
+template<typename T>
+String Str(T value) {
+  return String(value);
+}
+
 auto darkenColor = [](uint16_t color, float factor) -> uint16_t {
   uint8_t r = (color >> 11) & 0x1F;
   uint8_t g = (color >> 5) & 0x3F;

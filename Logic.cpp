@@ -107,6 +107,10 @@ void ConvertFormatDateToUI(){
   Serial.println(FORMATDATE);
   Serial.println(TOFORMATDATE);
 }
+String ConvertFormatDateToUI(bool currentDate){
+  String FORMATED = FormatMonth(currMonth) + " "+String(currDay)+", "+String(currYear);
+  return FORMATED;
+}
 
 String FormatMonth(int month){
   switch(month){
@@ -164,6 +168,7 @@ void SetupDeviceIO(){
   pinMode(IOSOLAR, OUTPUT);
   pinMode(IOMOTOR, OUTPUT);
   pinMode(IORESET, OUTPUT);
+  digitalWrite(IOSOLAR, LOW);
   digitalWrite(IORESET, LOW);
   digitalWrite(IOMOTOR, HIGH);
   digitalWrite(IOHEATER, HIGH);
@@ -202,7 +207,7 @@ void UpdateDeviceState(){
 void SensorDevice(){
   if(SystemRunning){
     if(!isnan(temp) && !isnan(humid)){
-      if(ctof(temp) > ctof(maxtemp)){
+      if(ctof(temp) > ctof(maxtemp - .5)){
         deviceState[HEATER] = false;
       }else if(ctof(temp) < ctof(mintemp)){
         deviceState[HEATER] = true;
@@ -298,6 +303,7 @@ int dayInMonth(uint8_t month, uint16_t year) {
 }
 
 void humidSwitchOff(){
+  // Serial.println("/? Turn OFF Humid!");  
   uint8_t processdelay = 40;
   digitalWrite(IOHUMID, HIGH);
   delay(processdelay);
@@ -310,6 +316,7 @@ void humidSwitchOff(){
 }
 
 void humidSwitchOn(){
+  // Serial.println("/? Turn ON Humid!");
   uint8_t processdelay = 30;
   digitalWrite(IOHUMID, HIGH);
   delay(processdelay);

@@ -13,12 +13,12 @@
 #define RST 24
 
 
-#define IOMOTOR 28 // 29
+#define IOMOTOR 29 // 29
 #define IOSOLAR 33
 #define IOHEATER 31
 #define IOHUMID 35
 
-#define IODHT 29
+#define IODHT 49 // 49
 
 #define DHTTYPE DHT22
 
@@ -73,7 +73,28 @@ enum SetupList {
 
 enum TimeAndDate {
   SHOW_TIME_INFO,
-  CHANGE_TIME_INFO
+  CHANGE_TIME_INFO,
+  CHANGE_TIME_SOLAR
+};
+
+enum ChangeTime {
+  CHANGE_MINUTE,
+  CHANGE_HOUR,
+  CHANGE_AMPM,
+  CHANGE_DAY,
+  CHANGE_MONTH,
+  CHANGE_YEAR,
+  CHANGE_COUNT
+};
+
+enum ChangeTimeSolar {
+  CHANGE_SOLAR_ON_HOUR,
+  CHANGE_SOLAR_ON_MINUTE,
+  CHANGE_SOLAR_ON_AMPM,
+  CHAGNE_SOLAR_OFF_HOUR,
+  CHANGE_SOLAR_OFF_MINUTE,
+  CHANGE_SOLAR_OFF_AMPM,
+  CHANGE_SOLAR_COUNT
 };
 
 enum SetupCalibrationList {
@@ -120,6 +141,8 @@ extern TSPoint p;
 extern virtuabotixRTC timertc;//CLock, IO, CeR_ST
 extern DHT dht;
 
+extern ChangeTimeSolar currentChangeTimeSolar, lastChangeTimeSolar;
+extern ChangeTime currentChangeTime, lastChangeTime;
 extern TimeAndDate currentTimeAndDateState, lastTimeAndDateState;
 extern FrameState currentState, lastState;
 extern SetupList currentList, lastList;
@@ -132,7 +155,10 @@ extern int humid, lasthumid;
 extern bool isSetupCalibrationFirstRun;
 extern String DATE, LASTDATE, CLOCK, LASTCLOCK;
 extern String FORMATDATE, LASTFORMATDATE, TOFORMATDATE, LASTTOFORMATDATE;
-
+extern uint16_t changeHour, changeMinute, changeDay, changeMonth, changeYear;
+extern bool changeAmPm;
+extern uint16_t changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
+extern bool changeSolarOnAmPm, changeSolarOffAmPm;
 extern bool HumidBjtSwitchRun;
 extern bool SystemRunning;
 extern bool timeExecution[];

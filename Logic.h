@@ -18,6 +18,7 @@ void humidSwitchOn();
 
 void ConvertTimeToUI();
 void ConvertFormatDateToUI();
+String ConvertFormatDateToUI(bool currentDate);
 String ConvertTimeToUI(int hour, int minute);
 String FormatMonth(int month);
 

@@ -37,6 +37,8 @@ void updateUiDevice(bool OnlyOnceRun);
 
 void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size);
 void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor);
+void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize);
+void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize, int LabelAdjustment);
 void drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size);
 void destroyAndDrawValues(String msg, String lastmsg, int px, int py, int size, uint16_t DestroyColor, uint16_t DrawColor);
 

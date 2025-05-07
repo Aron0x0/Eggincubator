@@ -7,6 +7,12 @@ TSPoint p;
 virtuabotixRTC timertc(CLK, DAT, RST);// virtuabotixRTC(DATA, CLK, RST)
 DHT dht(IODHT, DHTTYPE);
 
+ChangeTime currentChangeTime = CHANGE_COUNT;
+ChangeTime lastChangeTime = CHANGE_COUNT;
+
+ChangeTimeSolar currentChangeTimeSolar = CHANGE_SOLAR_COUNT;
+ChangeTimeSolar lastChangeTimeSolar = CHANGE_SOLAR_COUNT;
+
 TimeAndDate currentTimeAndDateState = SHOW_TIME_INFO;
 TimeAndDate lastTimeAndDateState = SHOW_TIME_INFO;
 
@@ -36,6 +42,7 @@ bool isSetupCalibrationFirstRun = true;
 String DATE, LASTDATE, CLOCK, LASTCLOCK;
 String FORMATDATE, LASTFORMATDATE, TOFORMATDATE, LASTTOFORMATDATE;
 
+
 bool SystemRunning = false;
 
 // unsigned long DelayDevice[];
@@ -60,6 +67,10 @@ uint16_t currHour, currMinute, currDay, currMonth, currYear;
 uint16_t lastHour, lastMinute, lastDay, lastMonth, lastYear;
 uint16_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
 uint16_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
+uint16_t changeHour, changeMinute, changeDay, changeMonth, changeYear;
+bool changeAmPm;
+uint16_t changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
+bool changeSolarOnAmPm, changeSolarOffAmPm;
 
 const uint8_t Candling[2] = {7, 14};
 const uint8_t UpdateHumid = 19;

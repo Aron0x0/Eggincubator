@@ -9,7 +9,8 @@ void setup() {
   UIinit();
   LogicInit();
   ExternalStorageInit();
-  // timertc.setDS1302Time(0, 55, 21, 5, 2, 6, 2025);
+  // timertc.setDS1302Time(0, 29, 17, 1, 5, 6, 2025);
+  // RESET_SYSTEM();
   ReadBackupSystemData();
   if(SystemRunning){
     PredictedEndDay(beginHour, beginMinute, beginMonth, beginDay, beginYear, TotalOperatingDay);

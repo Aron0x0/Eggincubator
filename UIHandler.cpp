@@ -9,17 +9,23 @@ void setupData(){
   mintemp = 35.5;
   maxhumid = 60;
   minhumid = 55;
-  solarOnHour = 20;
+  solarOnHour = 1;//29
   solarOnMinute = 0;
-  solarOffHour = 6;
+  solarOffHour = 0;//6
   solarOffMinute = 0;
   timertc.updateTime();
   DATE = String(timertc.month) + "/" + String(timertc.dayofmonth) + "/" + String(timertc.year);
   if(timertc.month >= 13 || timertc.dayofmonth >= 32 ) {
     timertc.setDS1302Time(0, 0, 0, 0, 0, 0, 2025);
-    // wdt_enable(WDTO_15MS);
-    // while(1);
   }
+  changeHour = timertc.hours;
+  if(changeHour >= 13){
+    changeHour -= 12;
+  }
+  changeMinute = timertc.minutes;
+  changeMonth = timertc.month;
+  changeDay = timertc.dayofmonth;
+  changeYear = timertc.year;
 }
 
 void UIinit() {

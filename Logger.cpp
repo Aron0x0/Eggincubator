@@ -5,17 +5,7 @@
 #define SD_CS 53  // SD Chip Select pin for Arduino Mega
 
 bool ExternalStorageInit() {
-  // if (!SD.begin(SD_CS)) {
-  //   Serial.println("initialization failed. Things to check:");
-  //   Serial.println("1. is a card inserted?");
-  //   Serial.println("2. is your wiring correct?");
-  //   Serial.println("3. did you change the chipSelect pin to match your shield or module?");
-  //   Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
-  //   while (true);
-  // }
-  // Serial.println("initialization done.");
   bool res = true;
-
   if (!SD.begin(SD_CS)) {
     Serial.println("/> No External Storage!");
     res = false;
@@ -34,7 +24,6 @@ bool ExternalStorageInit() {
       res = false;
     }
   }
-
   return res;
 }
 
