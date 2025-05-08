@@ -586,6 +586,15 @@ void BlurEffectScreen(){
 
 }
 
+void drawBatteryBar(int x, int y, int width, int height, int percentage) {
+  tft.drawRect(x, y, width, height, WHITE); // outer box
+  tft.drawRect(x + width, y + height / 3, 4, height / 3, WHITE); // battery tip
+
+  int fillWidth = (width - 2) * percentage / 100;
+  tft.fillRect(x + 1, y + 1, fillWidth, height - 2, GREEN);
+  tft.fillRect(x + 1 + fillWidth, y + 1, width - 2 - fillWidth, height - 2, BLACK);
+}
+
 
 void printTouchPoint(int x, int y){
   Serial.print(" (");Serial.print(x);Serial.print(", ");Serial.print(y);

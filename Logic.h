@@ -15,6 +15,8 @@ void SensorDevice();
 
 void humidSwitchOff();
 void humidSwitchOn();
+void updateBuzzer();
+void beep(int count);
 
 void ConvertTimeToUI();
 void ConvertFormatDateToUI();

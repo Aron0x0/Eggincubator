@@ -361,6 +361,10 @@ void changeTimeInfoVariableListener(bool arrow){
 void changeTimeSolarListener(int tx, int ty){
   if(isTouchInsideCircle(412, 217, 40, tx, ty)){
     Serial.println("/? Saving Solar Time.....");
+    solarOnHour = changeSolarOnHour+(changeSolarOnAmPm? 12 : 0);
+    solarOnMinute = changeSolarOnMinute;
+    solarOffHour = changeSolarOffHour+(changeSolarOffAmPm? 12 : 0);
+    solarOffMinute = changeSolarOffMinute;
     currentTimeAndDateState = SHOW_TIME_INFO;
     lastTimeAndDateState = SHOW_TIME_INFO; 
   }

@@ -23,6 +23,7 @@ void setup() {
 void loop() {
   timertc.updateTime();
   SystemTimeUpdate();
+  updateBuzzer();
   if(SystemRunning) {
     UpdateSystemSensorData();
     SensorDevice();

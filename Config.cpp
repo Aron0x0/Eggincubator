@@ -27,6 +27,8 @@ bool LASTHUMID = false;
 bool LASTHEATER = false;
 bool LASTSOLAR = false;
 
+bool isBatteryGood = false;
+
 SetupCalibrationList currentListVar = NONE;
 SetupCalibrationList lastListVar = NONE;
 
@@ -81,3 +83,12 @@ unsigned long MotorDelayStart = 0;
 unsigned long MotorActiveStart = 0;
 float MotorDelay = 10; 
 float MotorActiveDuration = 24;// 60/2.5 = 24 seconds per rotation. // 60/3 = 20
+
+int beepTarget = 0;
+int beepCount = 0;
+bool isBeeping = false;
+bool buzzerOn = false;
+
+unsigned long lastToggleTime = 0;
+unsigned long beepDuration = 200;   // Time buzzer stays ON
+unsigned long beepGap = 300;        // Time between beeps

@@ -228,10 +228,15 @@ void SensorDevice(){
     }else{
       temp = 3; humid = 3;//3 = for Lost Connection on DHT22
     }
-    if(isTimeInRange(currHour, currMinute, solarOnHour, solarOnMinute, solarOffHour, solarOffMinute)){
-      deviceState[SOLAR] = true;
+    
+    if(isBatteryGood){
+      if(isTimeInRange(currHour, currMinute, solarOnHour, solarOnMinute, solarOffHour, solarOffMinute)){
+        deviceState[SOLAR] = true;
+      } else {
+        deviceState[SOLAR] = false;
+      }
     } else {
-      deviceState[SOLAR] = false;
+      Log("BAT01",'a');
     }
 
     if(!deviceState[MOTOR] && (millis() - MotorDelayStart) >= SecondsToMillis(MotorDelay)){
@@ -322,4 +327,53 @@ void humidSwitchOn(){
   delay(processdelay);
   digitalWrite(IOHUMID, LOW);
   delay(processdelay);
+}
+
+float readBatteryVoltage(int analogPin) {
+  int raw = analogRead(analogPin);
+  float voltage = (raw / 1023.0) * 5.0;
+  float batteryVoltage = voltage * ((20.0 + 10.0) / 10.0); // scale up
+  return batteryVoltage;
+}
+
+int getBatteryPercentage(float voltage) {
+  float maxVoltage = 14.8;
+  float minVoltage = 11.0; // typical cutoff for Li-ion
+  int percentage = (int)(((voltage - minVoltage) / (maxVoltage - minVoltage)) * 100.0);
+  percentage = constrain(percentage, 0, 100);
+  return percentage;
+}
+
+
+// Call this to trigger beeping n times
+void beep(int count) {
+  beepTarget = count;
+  beepCount = 0;
+  isBeeping = true;
+  buzzerOn = false;
+  lastToggleTime = millis();
+}
+
+void updateBuzzer() {
+  if (!isBeeping) return;
+
+  unsigned long now = millis();
+
+  if (!buzzerOn && beepCount < beepTarget && (now - lastToggleTime >= beepGap)) {
+    tone(IOBUZZER, 1000);  // Start tone
+    buzzerOn = true;
+    lastToggleTime = now;
+  }
+
+  if (buzzerOn && (now - lastToggleTime >= beepDuration)) {
+    noTone(IOBUZZER);      // Stop tone
+    buzzerOn = false;
+    lastToggleTime = now;
+    beepCount++;
+  }
+
+  if (beepCount >= beepTarget) {
+    isBeeping = false;
+    noTone(IOBUZZER);  // Make sure it's off
+  }
 }

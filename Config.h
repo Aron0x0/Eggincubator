@@ -17,13 +17,10 @@
 #define IOSOLAR 33
 #define IOHEATER 31
 #define IOHUMID 35
-
 #define IODHT 49 // 49
-
 #define DHTTYPE DHT22
-
 #define IORESET 48
-
+#define IOBUZZER 43
 
 #define BLACK   0x0000
 #define BLUE    0x001F
@@ -128,6 +125,7 @@ struct TimeExecution {
   bool active;
 };
 
+extern bool isBatteryGood;
 extern bool LASTMOTOR, LASTHUMID, LASTHEATER, LASTSOLAR;
 extern unsigned long MotorDelayStart;
 extern unsigned long MotorActiveStart;
@@ -141,6 +139,9 @@ extern TSPoint p;
 extern virtuabotixRTC timertc;//CLock, IO, CeR_ST
 extern DHT dht;
 
+extern bool isBeeping, buzzerOn;
+extern int beepTarget, beepCount;
+extern unsigned long beepGap, beepDuration, lastToggleTime;
 extern ChangeTimeSolar currentChangeTimeSolar, lastChangeTimeSolar;
 extern ChangeTime currentChangeTime, lastChangeTime;
 extern TimeAndDate currentTimeAndDateState, lastTimeAndDateState;
