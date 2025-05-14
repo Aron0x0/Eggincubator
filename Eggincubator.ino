@@ -13,6 +13,7 @@ void setup() {
   // RESET_SYSTEM();
   ReadBackupSystemData();
   if(SystemRunning){
+    LogMsg("BACKUP", "Reading EEPROM data....");
     PredictedEndDay(beginHour, beginMinute, beginMonth, beginDay, beginYear, TotalOperatingDay);
     ConvertFormatDateToUI();
     MotorDelayStart = millis();

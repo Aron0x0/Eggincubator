@@ -9,10 +9,14 @@ void setupData(){
   mintemp = 35.5;
   maxhumid = 60;
   minhumid = 55;
-  solarOnHour = 1;//29
+  solarOnHour = 0;//29
   solarOnMinute = 0;
   solarOffHour = 0;//6
   solarOffMinute = 0;
+  changeSolarOnHour = 0;
+  changeSolarOnMinute = 0;
+  changeSolarOffHour = 0;
+  changeSolarOffMinute = 0;
   timertc.updateTime();
   DATE = String(timertc.month) + "/" + String(timertc.dayofmonth) + "/" + String(timertc.year);
   if(timertc.month >= 13 || timertc.dayofmonth >= 32 ) {
@@ -26,6 +30,9 @@ void setupData(){
   changeMonth = timertc.month;
   changeDay = timertc.dayofmonth;
   changeYear = timertc.year;
+  for(int i = 0; i > DEVICE_COUNT;i++){
+    deviceState[i] = false;
+  }
 }
 
 void UIinit() {
@@ -64,7 +71,6 @@ void FrameLoop() {
         // Serial.println("/> Update State UI Of Devices/.");
       }
     }
-
     updateUiClock(CLOCK, LASTCLOCK, 240, 20); // drawString("99/99 AM", 240, 20, 3, WHITE, true);
     // updateUiDevice();
   }
@@ -95,6 +101,7 @@ void FrameLoop() {
 
     printTouchPoint(x, y);
     EachFrameListener(x, y);
+    delay(200);
   }
 }
 
@@ -121,6 +128,10 @@ void drawCurrentDateTimeFrame(){
         break;
       case CHANGE_TIME_INFO:
         changeTimeInfoFrame();
+        lastTimeAndDateState = currentTimeAndDateState;
+        break;
+      case CHANGE_TIME_SOLAR:
+        changeTimeSolarFrame();
         lastTimeAndDateState = currentTimeAndDateState;
         break;
     }

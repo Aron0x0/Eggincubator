@@ -71,8 +71,9 @@ uint16_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
 uint16_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
 uint16_t changeHour, changeMinute, changeDay, changeMonth, changeYear;
 bool changeAmPm;
-uint16_t changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
+unsigned int changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
 bool changeSolarOnAmPm, changeSolarOffAmPm;
+uint16_t inverterStartHour, inverterStartMinute, inverterEndHour, inverterEndMinute;
 
 const uint8_t Candling[2] = {7, 14};
 const uint8_t UpdateHumid = 19;
@@ -82,12 +83,22 @@ unsigned long MotorLastTime;
 unsigned long MotorDelayStart = 0;
 unsigned long MotorActiveStart = 0;
 float MotorDelay = 10; 
-float MotorActiveDuration = 24;// 60/2.5 = 24 seconds per rotation. // 60/3 = 20
+float MotorActiveDuration = 8;// 60/2.5 = 24 seconds per rotation. // 60/3 = 20
+float MotorGoingFront = 4;
+bool isMotorPositionDefault = true;
+bool isLastisMotorPositionDefault = false;
+
+bool isDoorOpen = false;
+bool isLastDoorOpen = true;
 
 int beepTarget = 0;
 int beepCount = 0;
 bool isBeeping = false;
 bool buzzerOn = false;
+
+float BatteryVoltage;
+int BatteryLevel, lastBatteryLevel;
+
 
 unsigned long lastToggleTime = 0;
 unsigned long beepDuration = 200;   // Time buzzer stays ON

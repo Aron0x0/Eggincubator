@@ -4,9 +4,11 @@
 #include "Logic.h"
 #include "TouchHandler.h"
 #include "UIHandler.h"
+#include "Logger.h"
 
 void EggIncubatorFrame(){
   // tft.setRotation(1); 
+  LogMsg("DRAW", "Egg Incubator Frame");
   tft.fillScreen(BLACK);
   tft.fillRect(81, 14, 318, 61, BLACK);
   drawString("Egg Incubator", 125, 33, 3, WHITE);
@@ -17,6 +19,7 @@ void EggIncubatorFrame(){
   drawCircleWithFrame(81, 235, 75, BLACK, "SETUP", CYAN, 4);
 }
 void MainFrame(){
+  LogMsg("DRAW", "Main Frame");
   tft.fillScreen(GRAY);
 
   drawCircleWithFrame(38, 34, 17, GRAY, "?", BLACK, 3, BLACK);
@@ -28,8 +31,8 @@ void MainFrame(){
   tft.drawLine(478, 1, 465, 12, BLACK);
   tft.drawLine(1, 318, 15, 307, BLACK);
 
-  updateUiClock(CLOCK, LASTCLOCK, 240, 20);
-  updateUiDate(DATE, LASTDATE, 400, 35);
+  // updateUiClock(CLOCK, LASTCLOCK, 240, 20, true);
+  // updateUiDate(DATE, LASTDATE, 400, 35);
   updateTempHumidDisplay();
 
   drawString("TEMPERATURE:", 40, 55, 3, WHITE);
@@ -39,17 +42,21 @@ void MainFrame(){
   drawRecWithFrame(280, 181, 151, 47, RED, "HEAT", BLACK, 3);
   drawRecWithFrame(280, 235, 151, 47, RED, "SOLAR", BLACK, 3);
   // updateUiDevice(true);
+  updateUiClock(CLOCK, LASTCLOCK, 240, 20, false);
 }
 
 void drawNewMainFrame(){
+  LogMsg("DRAW", "New Main Frame");
   tft.fillScreen(BLACK);
   drawGaugeBase(TEMP_X, TEMP_Y, "TEMP", 0, 50);
   drawGaugeBase(HUMID_X, HUMID_Y, "HUM", 0, 100);
   drawDeviceIndicators(); 
   drawCircleWithFrame(240, 280, 20, BLACK, "?", WHITE, 2, WHITE, 80, 2);
+  drawGaugeValue(TEMP_X, TEMP_Y, temp, 0, 50, RED, "c", true);
+  drawGaugeValue(HUMID_X, HUMID_Y, humid, 0, 100, BLUE, "%", false);
+  updateUiClock(CLOCK, LASTCLOCK, 240, 20, false);
   // void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize, int LabelAdjustment)
 }
-
 
 void drawGaugeBase(int cx, int cy, const char* label, int minVal, int maxVal) {
   tft.setTextSize(3);
@@ -163,6 +170,7 @@ void destroyTempHumidDisplay(){
 }
 
 void SetupFrame(){
+  LogMsg("DRAW", "Setup Frame");
   tft.fillScreen(GRAY);
   drawString("Setup", 185, 12, 4);
   tft.fillRect(22, 49, 127, 39, BLACK);
@@ -177,28 +185,32 @@ void SetupFrame(){
 }
 
 void AboutFrame(){
+  LogMsg("DRAW", "About Frame");
 }
 void MenuFrame(){
+  LogMsg("DRAW", "Menu Frame");
 }
 void TimeAndDateFrame(){
+  LogMsg("DRAW", "Time And Date Frame");
   // ConvertFormatDateToUI();
   tft.fillRect(7, 94, 463, 219, GRAY);
   tft.fillRect(38, 109, 206, 109, WHITE);
   tft.drawRect(38, 109, 206, 109, BLACK);
   drawString("DATE",141, 121, 2, BLACK, true, true);
   drawString((String(currMonth)+"/"+String(currDay)+"/"+String(currYear)),141, 163, 3, BLACK, true, true);
-  drawString(ConvertFormatDateToUI(true),141, 194, 3, BLACK, true, true);
+  drawString(ConvertFormatDateToUI(true, true),141, 194, 3, BLACK, true, true);
 
   tft.fillRect(38, 229, 206, 74, WHITE);
   tft.drawRect(38, 229, 206, 74, BLACK);
   drawString("TIME", 141, 248, 2, BLACK, true, true);
   drawString(CLOCK, 141, 280, 3, BLACK, true, true);
 
-  drawRecWithFrame(300, 160, 158, 45, WHITE, "Change Time", RED, 3);
-  drawString("CHANGE TIME", 378, 185, 2, BLACK, true, true);
-  drawRecWithFrame(299, 239, 158, 36, WHITE, "Set Solar Mode", RED, 3);
+  drawRecWithFrame(300, 160, 158, 45, WHITE, "Change Time", BLACK, 2);
+  // drawString("CHANGE TIME", 378, 185, 2, BLACK, true, true);
+  drawRecWithFrame(299, 239, 158, 45, WHITE, "Set_Solar_Mode", BLACK, 1);
 }
 void changeTimeInfoFrame(){
+  LogMsg("DRAW", "Change Time Info Frame");
   tft.fillRect(7, 94, 463, 219, GRAY);
   drawString("TIME", 140, 128, 4, BLACK, true, true);
   drawRecWithFrame(47, 148, 51, 46, WHITE, String(changeHour), BLACK, 3);
@@ -217,21 +229,23 @@ void changeTimeInfoFrame(){
   // drawRecWithFrame(int x, int y, int w, int h, int color, String label, int textColor, int size) 
 }
 void changeTimeSolarFrame(){
+  LogMsg("DRAW", "Change Time Solar Frame");
   tft.fillRect(7, 94, 463, 219, GRAY);
   drawString("Solar Mode Setup", 240, 110, 2, BLACK, true, true);
 
   drawRecWithFrame(28, 149, 55, 55, WHITE, Str(changeSolarOnHour), BLACK, 3);
   drawRecWithFrame(121, 149, 55, 55, WHITE, Str(changeSolarOnMinute), BLACK, 3);
-  drawRecWithFrame(214, 149, 55, 55, WHITE, Str(changeSolarOnAmPm), BLACK, 3);
+  drawRecWithFrame(214, 149, 55, 55, WHITE, (changeSolarOnAmPm? "AM": "PM"), BLACK, 3);
   drawRecWithFrame(28, 242, 55, 55, WHITE, Str(changeSolarOffHour), BLACK, 3);
   drawRecWithFrame(121, 242, 55, 55, WHITE, Str(changeSolarOffMinute), BLACK, 3);
-  drawRecWithFrame(214, 242, 55, 55, WHITE, Str(changeSolarOffAmPm), BLACK, 3);
+  drawRecWithFrame(214, 242, 55, 55, WHITE, (changeSolarOnAmPm? "AM": "PM"), BLACK, 3);
 
   drawCircleWithFrame(326, 172, 40, WHITE, "+", BLACK, 8, BLACK, 80);
   drawCircleWithFrame(326, 262, 40, WHITE, "-", BLACK, 8, BLACK, 80);
-  drawCircleWithFrame(412, 217, 40, WHITE, "SAVE", BLACK, 6, BLACK, 80);
+  drawCircleWithFrame(412, 217, 40, WHITE, "SAVE", BLACK, 2, BLACK, 80);
 }
 void OtherFrame(){
+  LogMsg("DRAW", "Other Frame");
   tft.fillRect(7, 94, 463, 219, BLACK);
   drawString("Test Mode",240, 110, 2, WHITE, true, true);
   drawCircleWithFrame(63, 162, 28, BLACK, "A", WHITE, 5, WHITE, 80);
@@ -241,6 +255,7 @@ void OtherFrame(){
   drawCircleWithFrame(418, 162, 28, BLACK, "E", WHITE, 5, WHITE, 80);
 }
 void CalibrationFrame(){
+  LogMsg("DRAW", "Calibration Frame");
   int xlistbox = 170;
   tft.fillRect(7, 94, 463, 219, GRAY);
 
@@ -270,6 +285,7 @@ void CalibrationFrame(){
 
 
 void StatFrame(){
+  LogMsg("DRAW", "Stat's Frame");
   // ConvertFormatDateToUI();
   // BlurEffectScreen();
   BlurEffect(0, 0, 480, 14);
@@ -318,6 +334,12 @@ void updateUiClock(String time, String lasttime, int x, int y){
     Serial.print("/> LOG :: DRAWING :: CLOCK :: ");Serial.println(CLOCK);
     LASTCLOCK = CLOCK;
   }
+}
+void updateUiClock(String time, String lasttime, int x, int y, bool OneTimeDraw){
+  drawString(LASTCLOCK, 240, 20, 3, BLACK, true);
+  drawString(CLOCK, 240, 20, 3, WHITE, true);
+  Serial.print("/> LOG :: DRAWING :: CLOCK :: ");Serial.println(CLOCK);
+  LASTCLOCK = CLOCK;
 }
 
 void updateUiDate(String date, String lastdate, int x, int y){
@@ -581,7 +603,7 @@ void BlurEffect(int x, int y, int w, int h){
 
 void BlurEffectScreen(){
   // drawDimmedBox(0, 0, 480, 320, GRAY);        // Base dim
-  // drawFakeBlurOverlay(0, 0, 480, 320);        // Dithered overlay
+  // drawFakeBlurOverlay(0, 0, 480, 320);        // Dithered overlay  
   drawHatchBlur(0, 0, 480, 320);              // Optional texture
 
 }

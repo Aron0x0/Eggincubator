@@ -35,6 +35,17 @@ bool ExternalStorageInit() {
       Serial.println("/> ERROR: Failed to create Log.txt!");
       res = false;
     }
+    File LogMsg = SD.open("LogMsg.txt", FILE_WRITE);
+    if (Log) {
+      if (Log.size() == 0) {
+        Log.println("DATE,Time,Action,XPosistion,YPosition,Message");
+      }
+      Log.close();
+      Serial.println("/? Creating LogMsg.txt...");
+    } else {
+      Serial.println("/> ERROR: Failed to create Log.txt!");
+      res = false;
+    }
   }
   return res;
 }
@@ -52,6 +63,37 @@ void WriteExternalStorage() {
     Serial.println("/> ERROR: Failed to open data.txt for writing!");
   }
 }
+
+void LogMsg(String ACTION, String MSG, int XTSPOINT, int YTSPOINT){//DATE,Time,Action,XPosistion,YPosition,Message
+  File LogMsg = SD.open("LogMsg.txt", FILE_WRITE);
+  if(LogMsg){
+    LogMsg.print(DATE); LogMsg.print(",");
+    LogMsg.print(CLOCK); LogMsg.print(",");
+    LogMsg.print(ACTION); LogMsg.print(",");
+    LogMsg.print(XTSPOINT); LogMsg.print(",");
+    LogMsg.print(YTSPOINT); LogMsg.print(",");
+    LogMsg.println(MSG);
+    LogMsg.close();
+  } else {
+    Serial.println("/> ERROR: Failed to open LogMsg.txt for writing!");
+  }
+}
+
+void LogMsg(String ACTION, String MSG){//DATE,Time,Action,XPosistion,YPosition,Message
+  File LogMsg = SD.open("LogMsg.txt", FILE_WRITE);
+  if(LogMsg){
+    LogMsg.print(DATE); LogMsg.print(",");
+    LogMsg.print(CLOCK); LogMsg.print(",");
+    LogMsg.print(ACTION); LogMsg.print(",");
+    LogMsg.print("NONE"); LogMsg.print(",");
+    LogMsg.print("NONE"); LogMsg.print(",");
+    LogMsg.println(MSG);
+    LogMsg.close();
+  } else {
+    Serial.println("/> ERROR: Failed to open LogMsg.txt for writing!");
+  }
+}
+
 
 void Log(String ErrorCode, char Type){
   String ErrorType;

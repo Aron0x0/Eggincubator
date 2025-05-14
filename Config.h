@@ -5,22 +5,26 @@
 #include <DHT.h>
 #include <virtuabotixRTC.h>
 
-// #define CLK 23
-// #define DAT 25
-// #define RST 27
-#define CLK 22
-#define DAT 23
-#define RST 24
+#define CLK 25
+#define DAT 27
+#define RST 29
+// #define CLK 22
+// #define DAT 23
+// #define RST 24
 
 
-#define IOMOTOR 29 // 29
-#define IOSOLAR 33
-#define IOHEATER 31
-#define IOHUMID 35
+#define IOSOLAR 31
+#define IOHUMIDAC 33
+#define IOINVERTER 37
+#define IOHEATER 39
+#define IOMOTOR 41 // 29
+#define IOHUMID 43
+#define IOBUZZER 44
+#define IODOOR 45
 #define IODHT 49 // 49
-#define DHTTYPE DHT22
 #define IORESET 48
-#define IOBUZZER 43
+#define IOBATTERY A15
+#define DHTTYPE DHT22
 
 #define BLACK   0x0000
 #define BLUE    0x001F
@@ -107,6 +111,7 @@ enum DeviceState {
   HUMID,
   HEATER,
   SOLAR,
+  INVERTER, 
   DEVICE_COUNT
 };
 
@@ -114,6 +119,8 @@ enum DeviceState {
 enum Debug {
   DEVICES,
   EXTERNAL_STORAGE,
+  DOOR,
+  BATTERY,
   DEVICES_COUNT
 };
 
@@ -126,6 +133,8 @@ struct TimeExecution {
 };
 
 extern bool isBatteryGood;
+extern float BatteryVoltage;
+extern int BatteryLevel, lastBatteryLevel;
 extern bool LASTMOTOR, LASTHUMID, LASTHEATER, LASTSOLAR;
 extern unsigned long MotorDelayStart;
 extern unsigned long MotorActiveStart;
@@ -158,14 +167,18 @@ extern String DATE, LASTDATE, CLOCK, LASTCLOCK;
 extern String FORMATDATE, LASTFORMATDATE, TOFORMATDATE, LASTTOFORMATDATE;
 extern uint16_t changeHour, changeMinute, changeDay, changeMonth, changeYear;
 extern bool changeAmPm;
-extern uint16_t changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
+extern unsigned int changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
 extern bool changeSolarOnAmPm, changeSolarOffAmPm;
+extern uint16_t inverterStartHour, inverterStartMinute, inverterEndHour, inverterEndMinute;
 extern bool HumidBjtSwitchRun;
 extern bool SystemRunning;
 extern bool timeExecution[];
 extern bool deviceState[DEVICE_COUNT];
 extern bool lastdeviceState[DEVICE_COUNT];
 extern bool devices[DEVICE_COUNT];
+extern bool isDoorOpen, isLastDoorOpen;
+extern bool isMotorPositionDefault, isLastMotorPositionDefault;
+extern float MotorGoingFront;
 
 extern unsigned long timeExecutionDelay[DEVICE_COUNT];
 extern unsigned long functionDelayTracker[DEVICE_COUNT];

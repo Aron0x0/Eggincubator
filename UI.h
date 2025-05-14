@@ -25,10 +25,12 @@ void drawRightTriangleAtCorner(int x, int y, int size, uint16_t color, int rotat
 
 void drawCurrentDateTimeFrame();
 void changeTimeInfoFrame();
+void changeTimeSolarFrame();
 
 void updateTempHumidDisplay();
 void destroyTempHumidDisplay();
 void updateUiClock(String time, String lasttime, int x, int y);
+void updateUiClock(String time, String lasttime, int x, int y, bool OneTimeDraw);
 void updateUiDate(String date, String lastdate, int x ,int y);
 void updateUIField(float value, float &lastValue, int x, int y);
 void updateUIField(int value, int &lastValue, int x, int y);

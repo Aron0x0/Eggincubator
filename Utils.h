@@ -8,8 +8,12 @@ auto getPercent = [] (float Whole, float Percentage) -> float {
   return (Percentage / 100) * Whole;
 };
 
-auto SecondsToMillis = [] (float Time) -> unsigned long {
-  return (Time * 1000);
+auto SecondsToMillis = [](float timeInSeconds) -> unsigned long {
+    return static_cast<unsigned long>(timeInSeconds * 1000);
+};
+
+auto MinutesToMillis = [](int timeInMinutes) -> unsigned long {
+    return SecondsToMillis(static_cast<float>(timeInMinutes * 60));
 };
 
 template<typename T>
