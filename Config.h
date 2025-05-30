@@ -5,9 +5,9 @@
 #include <DHT.h>
 #include <virtuabotixRTC.h>
 
-#define CLK 25
-#define DAT 27
-#define RST 29
+#define CLK 22
+#define DAT 24
+#define RST 26
 // #define CLK 22
 // #define DAT 23
 // #define RST 24
@@ -15,13 +15,15 @@
 
 #define IOSOLAR 31
 #define IOHUMIDAC 33
+#define LEDINSIDE 35
 #define IOINVERTER 37
 #define IOHEATER 39
 #define IOMOTOR 41 // 29
 #define IOHUMID 43
-#define IOBUZZER 44
+#define IOBUZZER 42
 #define IODOOR 45
-#define IODHT 49 // 49
+#define IODHT 46 // 49
+#define IODHTBACK 44 // 49
 #define IORESET 48
 #define IOBATTERY A15
 #define DHTTYPE DHT22
@@ -121,6 +123,7 @@ enum Debug {
   EXTERNAL_STORAGE,
   DOOR,
   BATTERY,
+  BATTERYLEVEL,
   DEVICES_COUNT
 };
 
@@ -146,7 +149,7 @@ extern MCUFRIEND_kbv tft;
 extern TouchScreen ts;
 extern TSPoint p;
 extern virtuabotixRTC timertc;//CLock, IO, CeR_ST
-extern DHT dht;
+extern DHT dht, dhtback;
 
 extern bool isBeeping, buzzerOn;
 extern int beepTarget, beepCount;
@@ -189,6 +192,8 @@ extern uint16_t currHour, currMinute, currDay, currMonth, currYear;
 extern uint16_t lastHour, lastMinute, lastDay, lastMonth, lastYear;
 extern uint16_t beginHour, beginMinute, beginDay, beginMonth, beginYear;
 extern uint16_t toThisHour, toThisMinute, toThisDay, toThisMonth, toThisYear;
+extern unsigned int backupCurrHour, backupCurrMinute, backupCurrDay, backupCurrMonth, backupCurrYear;
+
 
 extern const uint8_t Candling[2];
 extern const uint8_t UpdateHumid;

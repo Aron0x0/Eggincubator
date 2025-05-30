@@ -86,17 +86,19 @@ void EggIncubatorListener(int tx, int ty){
     MotorDelayStart = millis();
     currentState = STATE_MAIN;
     BackupSystemData();
+    EnergizeSolarTime();
     // delay(1000);
   }
   if(isTouchInsideCircle(379, 215, 55, tx, ty)){
     LogMsg("BUTTON", "About Button.");
     Serial.println("/> Action :: Clicked :: ABOUT");
-    RESET_SYSTEM();
-    // currentState = STATE_ABOUT;
+    // RESET_SYSTEM();
+    currentState = STATE_ABOUT;
   }
   if(isTouchInsideCircle(81, 235, 75, tx, ty)){
     LogMsg("BUTTON", "Configure Max and Min Temp Humid");
     Serial.println("/> Action :: Clicked :: SETUP");
+    currentList = LIST1;
     currentState = STATE_SETUP;
   }
 }
@@ -141,6 +143,9 @@ void AboutListener(int tx, int ty){
     Serial.println("/> Action :: Clicked :: About Exit Button");
     currentState = STATE_HOME;
   }
+  if(isTouchInsideCircle(447, 292, 20, tx, ty)){
+    currentState = STATE_HOME;
+  }
 }
 void MenuListener(int tx, int ty){
   if(isTouchInsideRectangle(428, 0, 52, 56, tx, ty)){
@@ -169,6 +174,19 @@ void StatListener(int tx, int ty){
     LogMsg("BUTTON", "Stats Exit Button.");
     Serial.println("/> Action :: Clicked :: Stats Exit Button");
     currentState = STATE_MAIN;
+  }
+  if(isTouchInsideCircle(99, 235, 37, tx, ty)){
+    LogMsg("BUTTON", "Turn On Led@");
+    if(digitalRead(LEDINSIDE)){
+      LogMsg("BUTTON","Turning On LEDINSIDE", tx, ty);
+      drawCircleWithFrame(99, 235, 37, GREEN, "LED", BLACK, 2, BLACK, 80);
+      digitalWrite(LEDINSIDE, LOW);
+    }else if(!digitalRead(LEDINSIDE)){
+      LogMsg("BUTTON","Turning Off LEDINSIDE", tx, ty);
+      drawCircleWithFrame(99, 235, 37, RED, "LED", BLACK, 2, BLACK, 80);
+      digitalWrite(LEDINSIDE, HIGH);
+    }
+    // delay(800);
   }
   if(isTouchInsideCircle(396, 235, 37, tx, ty)){
     LogMsg("BUTTON", "Reset Button.");
@@ -254,12 +272,24 @@ void SetupCalibrationAdjustListener(float* var, int tx, int ty){//x = 420 and y 
 void showTimeInfoListener(int tx, int ty){
   if(isTouchInsideRectangle(300, 160, 158, 45, tx, ty)){
     Serial.println("/> ACTION :: CHANGETIME :: CLICKED ");
-    LogMsg("BUTTON", "Change Time");
+    LogMsg("BUTTON", "Change Time");changeHour, changeMinute, changeDay, changeMonth, changeYear;
+    changeHour = 6;
+    changeMinute = currMinute;
+    changeDay = currDay;
+    changeMonth = currMonth;
+    changeYear = currYear;
+    LogMsg("BUTTON", "CHANGING TIME ");
     currentTimeAndDateState = CHANGE_TIME_INFO;
   }
   if(isTouchInsideRectangle(299, 239, 158, 45, tx, ty)){
     Serial.println("/> ACTION :: CHANGESOLARTIME :: CLICKED");
     LogMsg("BUTTON", "Change Solar Time On and Off");
+    // changeSolarOnHour = (isAmOrPm(currHour, currMinute)? currHour - 12 : currHour);
+    changeSolarOnHour = 6;
+    changeSolarOnMinute = currMinute;
+    // changeSolarOffHour = (isAmOrPm(currHour, currMinute)? currHour - 12 : currHour);
+    changeSolarOffHour = 6;
+    changeSolarOffMinute = currMinute;
     currentTimeAndDateState = CHANGE_TIME_SOLAR;
   } 
 }
@@ -553,8 +583,10 @@ void OtherListener(int tx, int ty){
       LogMsg("TEST","Turning On Humid", tx, ty);
       humidSwitchOff();
       HumidBjtSwitchRun = true;
+      digitalWrite(IOHUMIDAC, HIGH);
     }else if(HumidBjtSwitchRun){
       LogMsg("TEST","Turning Off Humid", tx, ty);
+      digitalWrite(IOHUMIDAC, LOW);
       humidSwitchOn();
       HumidBjtSwitchRun = false;
     }
@@ -585,8 +617,16 @@ void OtherListener(int tx, int ty){
       LogMsg("TEST","Turning Off Solar Mode", tx, ty);
       digitalWrite(IOSOLAR, LOW);
     }
+    delay(1000);
   }
-  if(isTouchInsideCircle(418, 162, 28, tx, ty));
+  if(isTouchInsideCircle(418, 162, 28, tx, ty)){
+    if(!digitalRead(IOINVERTER)){
+      digitalWrite(IOINVERTER, HIGH);
+    } else {
+      digitalWrite(IOINVERTER, LOW);
+    }
+  }
+  
 }
 
 bool isTouchInsideCircle(int cx, int cy, int r, int tx, int ty) {

@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "Logger.h"
 #include "UI.h"
+#include "BackupData.h"
 
 void LogicInit() {
   dht.begin();
@@ -103,6 +104,16 @@ String ConvertTimeToUI(int hour, int minute){
   String MinuteStr = minute < 10 ? "0" + String(minute): String(minute);
   return (String(DisplayHour) + ":" + MinuteStr + suffix);
 }
+bool isAmOrPm(int hour, int minute){
+  String suffix ="AM";
+  if(hour == 0){
+  }else if(hour == 12){
+    suffix = "PM";
+  }else if(hour > 12){
+    suffix = "PM";
+  }
+  return suffix;
+}
 
 void ConvertFormatDateToUI(){
   FORMATDATE = FormatMonth(beginMonth) + " "+String(beginDay)+", "+String(beginYear);
@@ -135,14 +146,19 @@ void SetupDeviceIO(){
   pinMode(IOHUMID, OUTPUT);
   pinMode(IOSOLAR, OUTPUT);
   pinMode(IOINVERTER, OUTPUT);
+  pinMode(LEDINSIDE, OUTPUT);
   pinMode(IOMOTOR, OUTPUT);
   pinMode(IORESET, OUTPUT);
+  pinMode(IOHUMIDAC, OUTPUT);
   pinMode(IODOOR, INPUT);
+  digitalWrite(IORESET, LOW);
+  digitalWrite(LEDINSIDE, HIGH);
+  digitalWrite(IOHUMIDAC, LOW);
   digitalWrite(IOSOLAR, HIGH);
   digitalWrite(IOINVERTER, HIGH);
-  digitalWrite(IORESET, LOW);
   digitalWrite(IOMOTOR, HIGH);
   digitalWrite(IOHEATER, HIGH);
+  digitalWrite(IOHUMIDAC, HIGH);
   LogMsg("INITIO", "Configuring Analog and Didigtal IO (INPUT OUTPUT), (LOW, HIGH)");
 }
 
@@ -173,9 +189,9 @@ void DebugDeviceStates() {
 }
 
 void UpdateDeviceState(){
+  // digitalWrite(IOSOLAR, deviceState[SOLAR] ? LOW : HIGH);
   digitalWrite(IOHEATER, deviceState[HEATER] ? LOW : HIGH);
   digitalWrite(IOMOTOR, deviceState[MOTOR] ? LOW : HIGH);
-  digitalWrite(IOSOLAR, deviceState[SOLAR] ? LOW : HIGH);
   digitalWrite(IOHUMIDAC, deviceState[HUMID] ? LOW : HIGH);
   digitalWrite(IOINVERTER, deviceState[INVERTER] ? LOW : HIGH);
 }
@@ -183,7 +199,7 @@ void UpdateDeviceState(){
 void SensorDevice(){
   if(SystemRunning){
     if(!isnan(temp) && !isnan(humid)){
-      if(ctof(temp) > ctof(maxtemp - .5)){
+      if(ctof(temp) > ctof(maxtemp - 1.5)){
         deviceState[HEATER] = false;
       }else if(ctof(temp) < ctof(mintemp)){
         deviceState[HEATER] = true;
@@ -192,7 +208,7 @@ void SensorDevice(){
         deviceState[HUMID] = false;
         if(!HumidBjtSwitchRun){
           humidSwitchOff();
-          HumidBjtSwitchRun = true;
+          HumidBjtSwitchRun = true; 
         }
       }else if(humid < minhumid){
         deviceState[HUMID] = true;
@@ -215,55 +231,68 @@ void SensorDevice(){
     }else if(BatteryLevel < 0){
       Log("BAT02", 'a');
     }
-    if(BatteryLevel <= 100 && BatteryLevel >= 10){
-      if(solarOnHour != solarOffHour && solarOnMinute != solarOffMinute){
-        if(isTimeInRange(currHour, currMinute, solarOnHour, solarOnMinute, solarOffHour, solarOffMinute)){
-          if(!deviceState[SOLAR]){
-            LogMsg("SOLAR", "Switing Power to Inverter");
-          }
-          deviceState[SOLAR] = true;
-          Serial.println("/> Solar Mode Onn!!");
-        } else {
-          if(deviceState[SOLAR]){
-            LogMsg("SOLAR", "Switching Back To Ac Outlet");
-          }
-          deviceState[SOLAR] = false;
-        }
-      }
+    // if(BatteryLevel <= 100 && BatteryLevel >= 10){
+    //   Serial.println("Good Battery");
+    //   if(isTimeInRange(currHour, currMinute, solarOnHour, solarOnMinute, solarOffHour, solarOffMinute)){
+        // if(!deviceState[SOLAR]){
+        //   LogMsg("SOLAR", "Switing Power to Inverter");
+        // }
+        // deviceState[SOLAR] = true;
+        // Serial.println("/> Solar Mode Onn!!");
+      // } else {
+        // if(deviceState[SOLAR]){
+        //   LogMsg("SOLAR", "Switching Back To Ac Outlet");
+        // }
+    //     deviceState[SOLAR] = false;
+    //   }
+    // } else {
+      // if(DelayFunction(BATTERY, 60000)){
+      //   Log("BAT01", 'a');
+      //   Serial.println("Bad Battery!");
+      // }
+      // if(deviceState[SOLAR]){
+      //   LogMsg("SOLAR", "Switching Back To Ac Outlet");
+      // }
+    //   deviceState[SOLAR] = false;
+    // }
+    if(isTimeInRange(currHour, currMinute, solarOnHour, solarOnMinute, solarOffHour, solarOffMinute)){
+      deviceState[SOLAR] = true; 
+      digitalWrite(IOHEATER, HIGH);
+      digitalWrite(IOMOTOR, HIGH);
+      digitalWrite(IOHUMIDAC, HIGH);
+      digitalWrite(INVERTER, LOW);
+      delay(1000);
+      digitalWrite(IOSOLAR, LOW);
+      delay(1000);
     } else {
-      if(DelayFunction(BATTERY, 60000)){
-        Log("BAT01", 'a');
-      }
-      if(deviceState[SOLAR]){
-        LogMsg("SOLAR", "Switching Back To Ac Outlet");
-      }
       deviceState[SOLAR] = false;
+      digitalWrite(IOSOLAR, HIGH);
     }
     if (isTimeInRange(currHour, currMinute, inverterStartHour, inverterStartMinute, inverterEndHour, inverterEndMinute)) {
       deviceState[INVERTER] = true;
     } else {
       deviceState[INVERTER] = false;
     }
-    
-    if (!isDoorOpen) {
-      if(isMotorPositionDefault){
-        MotorRotateDefault(); 
-      }
-      else if (!isMotorPositionDefault) {
-        LogMsg("DOOR", "The Door is Open");
-        Serial.println("Door is Closed");
-        // delay(10000);
-        isMotorPositionDefault = true;
-        MotorRotateGoingFront();
-      }
-    } 
-    else if (isDoorOpen && isMotorPositionDefault) {
-      MotorRotateGoingFront();
-      Serial.println("Door is Opened");
-      // delay(10000);
-      LogMsg("DOOR", "The Door is Closed.");
-      isMotorPositionDefault = false;
-    }
+    MotorRotateDefault(); 
+    // if (!isDoorOpen) {
+    //   if(isMotorPositionDefault){
+    //     MotorRotateDefault(); 
+    //   }
+    //   else if (!isMotorPositionDefault) {
+    //     LogMsg("DOOR", "The Door is Closed");
+    //     Serial.println("Door is Closed");
+    //     // digitalWrite(LEDINSIDE, HIGH);
+    //     isMotorPositionDefault = true;
+    //     MotorRotateGoingFront();
+    //   }
+    // } 
+    // else if (isDoorOpen && isMotorPositionDefault) {
+    //   MotorRotateGoingFront();
+    //   Serial.println("Door is Opened");
+    //   // digitalWrite(LEDINSIDE, LOW);
+    //   LogMsg("DOOR", "The Door is Open.");
+    //   isMotorPositionDefault = false;
+    // }
   }
 }
 
@@ -355,7 +384,7 @@ int dayInMonth(uint8_t month, uint16_t year) {
 
 void humidSwitchOff(){
   // Serial.println("/? Turn OFF Humid!");  
-  uint8_t processdelay = 40;
+  uint8_t processdelay = 80;
   digitalWrite(IOHUMID, HIGH);
   delay(processdelay);
   digitalWrite(IOHUMID, LOW);
@@ -363,16 +392,16 @@ void humidSwitchOff(){
   digitalWrite(IOHUMID, HIGH);
   delay(processdelay);
   digitalWrite(IOHUMID, LOW);
-  delay(processdelay);
+  // delay(processdelay);
 }
 
 void humidSwitchOn(){
   // Serial.println("/? Turn ON Humid!");
-  uint8_t processdelay = 30;
+  uint8_t processdelay = 80;
   digitalWrite(IOHUMID, HIGH);
   delay(processdelay);
   digitalWrite(IOHUMID, LOW);
-  delay(processdelay);
+  // delay(processdelay);
 }
 
 
@@ -409,12 +438,12 @@ float readRawVoltage(int analogPin){
 float readBatteryVoltage(int analogPin) {
   int raw = analogRead(analogPin);
   float voltage = (raw / 1023.0) * 5.0;
-  float batteryVoltage = voltage * ((8.9 + 3.3) / 3.3); // voltage divider formula
+  float batteryVoltage = voltage * ((10.0 + 3.3) / 3.3); // voltage divider formula
   return batteryVoltage;
 }
 
 int getBatteryPercentage(float voltage) {
-  float maxVoltage = 14.6;
+  float maxVoltage = 13.6;
   float minVoltage = 12.8;
   int percentage = (int)(((voltage - minVoltage) / (maxVoltage - minVoltage)) * 100.0);
   return constrain(percentage, 0, 100);
@@ -525,6 +554,7 @@ String FormatMonth(int month, bool Acronym){
       break;
     case 10:
       return "Oct";
+
       break;
     case 11:
       return "Nov";
@@ -532,5 +562,14 @@ String FormatMonth(int month, bool Acronym){
     case 12:
       return "Dec";
       break;
+  }
+}
+void checkTimeRtc(){
+  // if(timertc.hours == 0 && timertc.minutes == 1 && timertc.month == 1 && timertc.dayofmonth == 1 && timertc.year == 2000){
+  //   BackupSystemTime(true);
+  //   timertc.setDS1302Time(0, backupCurrMinute, backupCurrHour, 0, backupCurrDay, backupCurrMonth, backupCurrYear);
+  // }
+  if(timertc.dayofmonth == 1 && timertc.month == 1 && timertc.year == 2000){
+    timertc.setDS1302Time(0, 30, 6, 0, 16, 5, 2025);
   }
 }

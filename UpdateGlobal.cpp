@@ -3,6 +3,8 @@
 #include "Logic.h"
 
 void UpdateSystemSensorData(){
+  // temp = (dht.readTemperature() + dhtback.readTemperature()) / 2; 
+  // humid = (dht.readHumidity() + dhtback.readHumidity()) / 2; 
   temp = dht.readTemperature();
   humid = dht.readHumidity();
   BatteryVoltage = readBatteryVoltage(IOBATTERY); 

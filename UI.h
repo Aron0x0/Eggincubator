@@ -26,6 +26,7 @@ void drawRightTriangleAtCorner(int x, int y, int size, uint16_t color, int rotat
 void drawCurrentDateTimeFrame();
 void changeTimeInfoFrame();
 void changeTimeSolarFrame();
+void drawBatteryBar(int x, int y, int width, int height, int percentage);
 
 void updateTempHumidDisplay();
 void destroyTempHumidDisplay();

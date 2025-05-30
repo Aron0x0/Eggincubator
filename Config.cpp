@@ -6,6 +6,7 @@ TSPoint p;
 
 virtuabotixRTC timertc(CLK, DAT, RST);// virtuabotixRTC(DATA, CLK, RST)
 DHT dht(IODHT, DHTTYPE);
+DHT dhtback(IODHTBACK, DHTTYPE);
 
 ChangeTime currentChangeTime = CHANGE_COUNT;
 ChangeTime lastChangeTime = CHANGE_COUNT;
@@ -74,6 +75,7 @@ bool changeAmPm;
 unsigned int changeSolarOnHour, changeSolarOnMinute, changeSolarOffHour, changeSolarOffMinute;
 bool changeSolarOnAmPm, changeSolarOffAmPm;
 uint16_t inverterStartHour, inverterStartMinute, inverterEndHour, inverterEndMinute;
+unsigned int backupCurrHour, backupCurrMinute, backupCurrDay, backupCurrMonth, backupCurrYear;
 
 const uint8_t Candling[2] = {7, 14};
 const uint8_t UpdateHumid = 19;
@@ -82,9 +84,9 @@ const uint16_t TotalOperatingDay = 21;
 unsigned long MotorLastTime;
 unsigned long MotorDelayStart = 0;
 unsigned long MotorActiveStart = 0;
-float MotorDelay = 10; 
-float MotorActiveDuration = 8;// 60/2.5 = 24 seconds per rotation. // 60/3 = 20
-float MotorGoingFront = 4;
+float MotorDelay = 7200; 
+float MotorActiveDuration = 19;// 60/2.5 = 24 seconds per rotation. // 60/3 = 20
+float MotorGoingFront = 9.4;
 bool isMotorPositionDefault = true;
 bool isLastisMotorPositionDefault = false;
 

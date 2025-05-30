@@ -38,3 +38,6 @@ bool isTimeInRange(uint8_t hour, uint8_t minute, uint8_t onHour, uint8_t onMinut
 bool isLeafYear(uint16_t year);
 float readBatteryVoltage(int analogPin);
 int getBatteryPercentage(float voltage);
+void EnergizeSolarTime();
+void checkTimeRtc();
+bool isAmOrPm(int hour, int minute);

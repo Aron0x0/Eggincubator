@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "UI.h"
 #include <avr/wdt.h>
+#include "Logic.h"
 
 void setupData(){
   maxtemp = 37.5;
@@ -73,6 +74,12 @@ void FrameLoop() {
     }
     updateUiClock(CLOCK, LASTCLOCK, 240, 20); // drawString("99/99 AM", 240, 20, 3, WHITE, true);
     // updateUiDevice();
+    // if(BatteryLevel != lastBatteryLevel){
+    //   drawBatteryBar(355, 5, 60, 30, BatteryLevel);
+    // }
+    if(DelayFunction(BATTERYLEVEL, 1000)){
+      drawBatteryBar(355, 5, 60, 30, BatteryLevel);
+    }
   }
 
   if(currentState == STATE_SETUP){

@@ -55,6 +55,7 @@ void drawNewMainFrame(){
   drawGaugeValue(TEMP_X, TEMP_Y, temp, 0, 50, RED, "c", true);
   drawGaugeValue(HUMID_X, HUMID_Y, humid, 0, 100, BLUE, "%", false);
   updateUiClock(CLOCK, LASTCLOCK, 240, 20, false);
+  drawBatteryBar(355, 5, 60, 30, BatteryLevel);
   // void drawCircleWithFrame(int x, int y, int r, int color, String label, int textColor, int size, int frameColor, int frameSize, int LabelAdjustment)
 }
 
@@ -173,6 +174,7 @@ void SetupFrame(){
   LogMsg("DRAW", "Setup Frame");
   tft.fillScreen(GRAY);
   drawString("Setup", 185, 12, 4);
+  drawCircleWithFrame(435, 20, 20, WHITE, "<", BLACK, 2, BLACK, 80, 0);
   tft.fillRect(22, 49, 127, 39, BLACK);
   tft.fillRect(163, 49, 154, 39, BLACK);
   tft.fillRect(331, 49, 127, 39, BLACK);
@@ -181,11 +183,21 @@ void SetupFrame(){
   drawString("Other's", 378, 63, 1, WHITE);
   tft.drawRect(5, 92, 467, 223, BLACK);
   tft.drawRect(6, 93, 465, 221, BLACK);
-  
 }
 
 void AboutFrame(){
   LogMsg("DRAW", "About Frame");
+  tft.fillScreen(BLACK);
+  tft.drawRect(13, 10, 454, 120, WHITE);
+  drawCircleWithFrame(447, 292, 20, WHITE, "<", BLACK, 2, GRAY, 80, 0);
+  drawString("Development & Assessment", 240, 50, 2, WHITE, true, true);
+  drawString("Of", 240, 80, 2, WHITE, true, true);
+  drawString("Dual Powered Egg Incubator", 240, 110, 2, WHITE, true, true);
+
+  drawString("PROPONENT: LEIF MARCELUS A. DIZON", 240, 147, 2, WHITE, true, true);
+  drawString("CO-AUTHOR: MARCH DAVE A. DIZON", 240, 188, 2, WHITE, true, true);
+  drawString("SOFTWARE DEV: ARON S. PAYOG", 240, 230, 2,WHITE, true, true);
+  drawString("version 0.0.10", 240, 290, 2,WHITE, true, true);
 }
 void MenuFrame(){
   LogMsg("DRAW", "Menu Frame");
@@ -311,6 +323,7 @@ void StatFrame(){
   drawString((ConvertTimeToUI(solarOffHour, solarOffMinute)), 170, 136, 2, darkenColor(YELLOW, 0.7), true, true);
 
   drawString("Error Handler", 240, 207, 2, RED, true, true);
+  drawCircleWithFrame(99, 235, 37, WHITE, "LED", BLACK, 2, BLACK, 80);
   drawCircleWithFrame(396, 235, 37, GRAY, "DONE", darkenColor(GREEN, 0.8), 2, GREEN);
 }
 
